@@ -1,63 +1,48 @@
-/**
- * Rotate class handles screen rotation and orientation changes
- */
 class Rotate {
     constructor() {
-        this.init();
+        this.isInDOM = false;
+        
+        // Bind methods
+        R.BM(this, ["resize"]);
+        
+        // Setup resize observer
+        new R.ROR(this.resize).on();
+        
+        // Initial check
+        this.resize();
     }
 
-    /**
-     * Initializes rotation event listeners
-     */
-    init() {
-        window.addEventListener('orientationchange', this.handleOrientationChange.bind(this));
-        window.addEventListener('resize', this.handleResize.bind(this));
-    }
-
-    /**
-     * Handles device orientation changes
-     */
-    handleOrientationChange() {
-        const orientation = window.orientation;
-        this.updateLayout(orientation);
-    }
-
-    /**
-     * Handles window resize events
-     */
-    handleResize() {
-        const orientation = window.orientation;
-        this.updateLayout(orientation);
-    }
-
-    /**
-     * Updates layout based on orientation
-     * @param {number} orientation - The current device orientation
-     */
-    updateLayout(orientation) {
-        // Update layout based on orientation
-        if (orientation === 0 || orientation === 180) {
-            // Portrait mode
-            this.handlePortraitMode();
-        } else {
-            // Landscape mode
-            this.handleLandscapeMode();
+    resize() {
+        const isLandscape = _A.winRatio.widthToHeight > 1;
+        
+        if (isLandscape && !this.isInDOM) {
+            this.addRotationMessage();
+        } else if (!isLandscape && this.isInDOM) {
+            this.removeRotationMessage();
         }
     }
 
-    /**
-     * Handles portrait mode layout
-     */
-    handlePortraitMode() {
-        // Implement portrait mode specific layout
+    addRotationMessage() {
+        // Create wrapper div
+        this.rotationMessageWrapper = document.createElement("div");
+        this.rotationMessageWrapper.className = "rotation-message-wrapper";
+        
+        // Create message div
+        const messageElement = document.createElement("div");
+        messageElement.className = "rotation-message";
+        messageElement.textContent = "Please rotate your device.";
+        
+        // Append elements
+        this.rotationMessageWrapper.appendChild(messageElement);
+        document.body.prepend(this.rotationMessageWrapper);
+        
+        this.isInDOM = true;
     }
 
-    /**
-     * Handles landscape mode layout
-     */
-    handleLandscapeMode() {
-        // Implement landscape mode specific layout
+    removeRotationMessage() {
+        if (this.rotationMessageWrapper && this.rotationMessageWrapper.parentNode) {
+            this.rotationMessageWrapper.parentNode.removeChild(this.rotationMessageWrapper);
+        }
+        this.isInDOM = false;
     }
 }
-
-export default Rotate; 

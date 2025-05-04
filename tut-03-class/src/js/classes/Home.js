@@ -1,15 +1,14 @@
-import { gsap } from 'gsap';
+import AnimationManager from '../utils/AnimationManager';
 
 /**
  * Home class handles the home page functionality and animations
  */
-class Home {
+class HomePage {
     constructor() {
         this.initialized = false;
-        this.animations = [];
         this.elements = {};
+        this.animationManager = new AnimationManager();
         console.log("Home");
-        
     }
 
     /**
@@ -44,43 +43,17 @@ class Home {
     }
 
     /**
-     * Sets up animations using GSAP
+     * Sets up animations using AnimationManager
      */
     setupAnimations() {
-        // Initialize animations
-        this.animations = [
-            this.createHeroAnimation(),
-            this.createContentAnimation()
-        ];
-    }
-
-    /**
-     * Creates hero section animation
-     * @returns {GSAP.Timeline} The animation timeline
-     */
-    createHeroAnimation() {
-        return gsap.timeline({
-            paused: true,
-            defaults: { ease: 'power2.out' }
-        })
-        .from(this.elements.hero, {
-            opacity: 0,
+        // Create hero animation
+        this.animationManager.createSlideAnimation('hero', this.elements.hero, {
             y: 50,
             duration: 1
         });
-    }
 
-    /**
-     * Creates content section animation
-     * @returns {GSAP.Timeline} The animation timeline
-     */
-    createContentAnimation() {
-        return gsap.timeline({
-            paused: true,
-            defaults: { ease: 'power2.out' }
-        })
-        .from(this.elements.content, {
-            opacity: 0,
+        // Create content animation
+        this.animationManager.createSlideAnimation('content', this.elements.content, {
             y: 30,
             duration: 0.8,
             delay: 0.5
@@ -121,22 +94,24 @@ class Home {
      * Starts all animations
      */
     play() {
-        this.animations.forEach(animation => animation.play());
+        this.animationManager.playSequence(['hero', 'content']);
     }
 
     /**
      * Pauses all animations
      */
     pause() {
-        this.animations.forEach(animation => animation.pause());
+        this.animationManager.pause('hero');
+        this.animationManager.pause('content');
     }
 
     /**
      * Resets all animations
      */
     reset() {
-        this.animations.forEach(animation => animation.restart());
+        this.animationManager.reset('hero');
+        this.animationManager.reset('content');
     }
 }
 
-export default Home; 
+export default HomePage; 

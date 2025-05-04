@@ -3,6 +3,8 @@ R.iLerp = (t, e, i) => R.Clamp((i - t) / (e - t), 0, 1),
 R.Lerp = (t, e, i) => t * (1 - i) + e * i,
 R.Damp = (t, e, i) => R.Lerp(t, e, 1 - Math.exp(Math.log(1 - i) * RD)),
 R.Remap = (t, e, i, s, r) => R.Lerp(i, s, R.iLerp(t, e, r)),
+
+
 R.M = class {
     constructor(t) {
         R.BM(this, ["gRaf", "run", "uSvg", "uLine", "uProp"]),
@@ -238,14 +240,16 @@ R.TL = class {
     }
 }
 ,
+//////////////////////
 R.BM = (t, e) => {
     let i = e.length;
     for (; i--; )
         t[e[i]] = t[e[i]].bind(t)
-}
-,
+},
+////////////////
 R.Clamp = (t, e, i) => t < e ? e : i < t ? i : t,
 R.Clone = t => JSON.parse(JSON.stringify(t)),
+//////////////////////////
 R.Delay = class {
     constructor(t, e) {
         this.cb = t,
@@ -265,8 +269,10 @@ R.Delay = class {
         this.cb())
     }
 }
+//////////////////
 ,
 R.Dist = (t, e) => Math.sqrt(t * t + e * e),
+//////
 R.Ease = {
     linear: t => t,
     i1: t => 1 - Math.cos(t * (.5 * Math.PI)),
@@ -288,10 +294,12 @@ R.Ease = {
     o6: t => 1 === t ? 1 : 1 - 2 ** (-10 * t),
     io6: t => 0 === t || 1 === t ? t : (t /= .5) < 1 ? .5 * 2 ** (10 * (t - 1)) : .5 * (2 - 2 ** (-10 * --t))
 },
+////////////////////
 R.r0 = (t, e) => 1 - 3 * e + 3 * t,
 R.r1 = (t, e) => 3 * e - 6 * t,
 R.r2 = (t, e, i) => ((R.r0(e, i) * t + R.r1(e, i)) * t + 3 * e) * t,
 R.r3 = (t, e, i) => 3 * R.r0(e, i) * t * t + 2 * R.r1(e, i) * t + 3 * e,
+//////////////////
 R.r4 = (t, e, i, s, r) => {
     let a, h, l = 0;
     for (; h = e + .5 * (i - e),
@@ -299,8 +307,8 @@ R.r4 = (t, e, i, s, r) => {
     1e-7 < Math.abs(a) && ++l < 10; )
         ;
     return h
-}
-,
+},
+/////////////////////////////
 R.r5 = (e, i, s, r) => {
     for (let t = 0; t < 4; ++t) {
         var a = R.r3(i, s, r);
@@ -309,8 +317,9 @@ R.r5 = (e, i, s, r) => {
         i -= (R.r2(i, s, r) - e) / a
     }
     return i
-}
-,
+},
+////////////////
+
 R.Ease4 = t => {
     let a = t[0]
       , e = t[1]
@@ -331,8 +340,9 @@ R.Ease4 = t => {
         return .001 <= r ? R.r5(t, s, a, h) : 0 === r ? s : R.r4(t, r, r + .1, a, h)
     }
     )(t), e, i)
-}
-,
+},
+////////////////
+
 R.Fetch = e => {
     var t = "json" === e.type;
     let i = t ? "json" : "text";
@@ -353,8 +363,8 @@ R.Fetch = e => {
         e.success(t)
     }
     )
-}
-,
+},
+////////////////
 R.Has = (t, e) => t.hasOwnProperty(e),
 R.Is = {
     str: t => "string" == typeof t,
@@ -369,8 +379,8 @@ R.PCurve = (t, e, i) => (e + i) ** (e + i) / (e ** e * i ** i) * t ** e * (1 - t
 R.R = (t, e) => {
     e = R.Is.und(e) ? 100 : 10 ** e;
     return Math.round(t * e) / e
-}
-,
+},
+/////////
 R.Select = {
     el: t => {
         let e = [];
@@ -394,8 +404,8 @@ R.L = (t, e, i, s) => {
     "a" === e ? "add" : "remove");
     for (let t = 0; t < a; t++)
         r[t][l + "EventListener"](i, s, h)
-}
-;
+};
+/////////////////////////////////////
 let Tab = class {
     constructor() {
         this._ = [],
@@ -415,11 +425,12 @@ let Tab = class {
         for (; s--; )
             this._[s][i](e)
     }
-}
-  , RD = (R.Tab = new Tab,
-0)
+}, 
+////////////////////
+RD = (R.Tab = new Tab,0)
   , FR = 1e3 / 60
-  , Raf = (R.Raf = class {
+  , 
+   Raf = (R.Raf = class {
     constructor() {
         this._ = [],
         this.on = !0,
@@ -638,8 +649,8 @@ R.RO = class {
     }
 }
 ,
-new R.RO)
-  , RoId = 0;
+new R.RO), 
+  RoId = 0;
 function Router(t) {
     var e = _A
       , i = e.config.routes[t].page

@@ -1,165 +1,164 @@
-/**
- * Controller class handles navigation and page transitions
- */
 class Controller {
     constructor(config) {
         this.config = config;
-        this.device = config.device;
-        this.transitionM = config.transitionM;
+        this.deviceType = config.device;
+        this.transitionManager = config.transitionM;
         this.cache = {};
-        this.main = null;
-        this.target = null;
-        this.fromBack = false;
-        this.mutating = false;
-        this.route = {
-            new: { url: '' }
+        this.mainElement = null;
+        this.targetElement = null;
+        this.isFromBackNavigation = false;
+        this.isMutating = false;
+        this.currentRoute = {
+            new: {
+                url: '',
+                page: ''
+            }
         };
     }
 
-    /**
-     * Handles browser back/forward navigation
-     * @param {Event} event - The popstate event
-     */
-    onPopstate(event) {
-        const state = event.state;
-        if (state) {
-            this.route.new.url = state.url;
-            this.fromBack = true;
-            this.in();
+    initialize() {
+        // Set up event listeners
+        window.addEventListener('popstate', this.handlePopState.bind(this));
+        document.body.addEventListener('click', this.handleClick.bind(this));
+    }
+
+    handlePopState(event) {
+        // Handle browser back/forward navigation
+        if (event.state) {
+            this.currentRoute.new.url = event.state.url;
+            this.isFromBackNavigation = true;
+            this.navigateToNewContent();
         }
     }
 
-    /**
-     * Handles click events for navigation
-     * @param {Event} event - The click event
-     */
-    handleEvent(event) {
-        let target = event.target;
-        let isLink = false;
-        let isSubmitButton = false;
+    handleClick(event) {
+        // Handle click events for navigation
+        let targetElement = event.target;
+        let isAnchorElement = false;
+        let isSubmitElement = false;
 
         // Traverse up the DOM to find the relevant element
-        while (target !== document.body) {
-            const tagName = target.tagName;
-            if (tagName === 'A') {
-                isLink = true;
+        while (targetElement !== document.body) {
+            const elementTagName = targetElement.tagName;
+
+            if (elementTagName === 'A') {
+                isAnchorElement = true;
                 break;
             }
-            if ((tagName === 'INPUT' || tagName === 'BUTTON') && target.type === 'submit') {
-                isSubmitButton = true;
+
+            if ((elementTagName === 'INPUT' || elementTagName === 'BUTTON') &&
+                targetElement.type === 'submit') {
+                isSubmitElement = true;
                 break;
             }
-            target = target.parentNode;
+
+            targetElement = targetElement.parentNode;
         }
 
-        if (isLink) {
-            const href = target.href;
-            const protocol = href.substring(0, 3);
-            
-            // Handle link clicks
-            if (!target.hasAttribute('target') && protocol !== 'mai' && protocol !== 'tel') {
-                event.preventDefault();
-                
-                if (!this.mutating) {
-                    const path = href.replace(/^.*\/\/[^/]+/, '');
-                    if (path !== this.route.new.url) {
-                        this.mutating = true;
-                        this.out(path, target);
-                    } else if (target.id === 'nav-logo') {
-                        location.href = '/';
-                    }
-                }
-            }
-        } else if (isSubmitButton) {
+        if (isAnchorElement) {
+            this.handleAnchorClick(event, targetElement);
+        } else if (isSubmitElement) {
             event.preventDefault();
         }
     }
 
-    /**
-     * Initializes the page with new content
-     * @param {Function} callback - Callback function to execute after initialization
-     */
-    intro(callback) {
+    handleAnchorClick(event, anchorElement) {
+        const href = anchorElement.href;
+        const protocol = href.substring(0, 3);
+
+        // Skip processing for special links
+        if (anchorElement.hasAttribute('target') ||
+            protocol === 'mai' ||
+            protocol === 'tel') {
+            return;
+        }
+
+        event.preventDefault();
+
+        if (!this.isMutating) {
+            const path = this.getPathFromUrl(href);
+
+            if (path !== this.currentRoute.new.url) {
+                this.isMutating = true;
+                this.prepareContentTransition(path, anchorElement);
+            } else if (anchorElement.id === 'nav-logo') {
+                window.location.href = '/';
+            }
+        }
+    }
+
+    getPathFromUrl(url) {
+        return url.replace(/^.*\/\/[^/]+/, '');
+    }
+
+    loadInitialContent(callback) {
         const app = _A; // Global app instance
+
         R.Fetch({
-            url: `${app.route.new.url}?webp=${app.webp}&device=${this.device}`,
+            url: `${app.route.new.url}?webp=${app.webp}&device=${this.deviceType}`,
             type: 'html',
             success: response => {
-                const data = JSON.parse(response);
-                app.config.routes = data.routes;
-                app.data = data.data;
-                this.cache = data.cache;
-                
+                const { routes, data, cache } = JSON.parse(response);
+
+                // Update app configuration
+                app.config.routes = routes;
+                app.data = data;
+                this.cache = cache;
+
                 // Insert new content
-                this.add(document.body, 'afterbegin', data.body);
-                this.main = R.G.id('main');
-                this.transitionM = new this.transitionM();
-                callback();
+                this.insertContent(document.body, 'afterbegin', data.body);
+                this.mainElement = R.G.id('main');
+                this.transitionManager = new this.transitionManager();
+
+                if (callback) callback();
             }
         });
     }
 
-    /**
-     * Handles page transition out
-     * @param {string} path - The new path to navigate to
-     * @param {HTMLElement} target - The target element that triggered the navigation
-     */
-    out(path, target) {
-        Router(path);
+    prepareContentTransition(path, targetElement) {
+        this.updateRoute(path);
         const app = _A;
-        app.target = target;
-        app.fromBack = target === 'back';
+        this.targetElement = targetElement;
+        this.isFromBackNavigation = targetElement === 'back';
+
         app.page.update = () => {
-            this.in();
+            this.navigateToNewContent();
         };
     }
 
-    /**
-     * Handles page transition in
-     */
-    in() {
+    navigateToNewContent() {
         const app = _A;
-        const transition = this.transitionM;
-        
-        // Handle navigation
-        if (app.fromBack) {
-            app.fromBack = false;
+        const transition = this.transitionManager;
+
+        // Handle navigation transition
+        if (this.isFromBackNavigation) {
+            this.isFromBackNavigation = false;
             transition.in();
         } else {
             transition.in();
         }
 
         // Update page state
-        app.mutating = false;
+        this.isMutating = false;
         app.page = {};
     }
 
-    /**
-     * Inserts HTML content into the DOM
-     * @param {HTMLElement} parent - The parent element
-     * @param {string} position - The position to insert (beforebegin, afterbegin, beforeend, afterend)
-     * @param {string} content - The HTML content to insert
-     */
-    add(parent, position, content) {
-        parent.insertAdjacentHTML(position, content);
+    insertContent(parentElement, position, htmlContent) {
+        // Insert HTML content into the DOM
+        parentElement.insertAdjacentHTML(position, htmlContent);
     }
 
-    /**
-     * Handles browser back/forward navigation
-     */
-    handlePopState() {
+    updateRoute(path) {
         const app = _A;
-        if (!app.config.routes) {
-            return;
-        }
+        this.currentRoute.new.url = path;
+        this.updateHistoryState();
+    }
 
-        if (app.mutating) {
-            this.handlePopState();
-        } else {
-            app.mutating = true;
-            this.out(location.pathname, 'back');
-        }
+    updateHistoryState() {
+        const path = this.currentRoute.new.url;
+        history.pushState({
+            page: path
+        }, "", path);
     }
 }
-
 export default Controller; 

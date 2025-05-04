@@ -1,4 +1,4 @@
-import { gsap } from 'gsap';
+import AnimationManager from '../utils/AnimationManager';
 
 /**
  * Intro class handles the introduction/loading animations and transitions
@@ -6,11 +6,10 @@ import { gsap } from 'gsap';
 class Intro {
     constructor() {
         this.initialized = false;
-        this.animations = [];
         this.elements = {};
         this.isPlaying = false;
+        this.animationManager = new AnimationManager();
         console.log("Intro");
-        
     }
 
     /**
@@ -36,60 +35,24 @@ class Intro {
     }
 
     /**
-     * Sets up GSAP animations for the intro sequence
+     * Sets up animations using AnimationManager
      */
     setupAnimations() {
-        this.animations = [
-            this.createLoaderAnimation(),
-            this.createLogoAnimation(),
-            this.createContentAnimation()
-        ];
-    }
-
-    /**
-     * Creates loader animation
-     * @returns {GSAP.Timeline} The animation timeline
-     */
-    createLoaderAnimation() {
-        return gsap.timeline({
-            paused: true,
-            defaults: { ease: 'power2.inOut' }
-        })
-        .from(this.elements.loader, {
-            opacity: 0,
+        // Create loader animation
+        this.animationManager.createScaleAnimation('loader', this.elements.loader, {
             scale: 0.8,
             duration: 0.8
         });
-    }
 
-    /**
-     * Creates logo animation
-     * @returns {GSAP.Timeline} The animation timeline
-     */
-    createLogoAnimation() {
-        return gsap.timeline({
-            paused: true,
-            defaults: { ease: 'power2.out' }
-        })
-        .from(this.elements.logo, {
-            opacity: 0,
+        // Create logo animation
+        this.animationManager.createSlideAnimation('logo', this.elements.logo, {
             y: 30,
             duration: 1,
             delay: 0.5
         });
-    }
 
-    /**
-     * Creates content animation
-     * @returns {GSAP.Timeline} The animation timeline
-     */
-    createContentAnimation() {
-        return gsap.timeline({
-            paused: true,
-            defaults: { ease: 'power2.out' }
-        })
-        .from(this.elements.content, {
-            opacity: 0,
+        // Create content animation
+        this.animationManager.createSlideAnimation('content', this.elements.content, {
             y: 20,
             duration: 0.8,
             delay: 1
@@ -104,39 +67,37 @@ class Intro {
         if (this.isPlaying) return;
         
         this.isPlaying = true;
-        const masterTimeline = gsap.timeline({
-            onComplete: () => {
-                this.isPlaying = false;
-                if (onComplete) onComplete();
-            }
+        this.animationManager.playSequence(['loader', 'logo', 'content'], () => {
+            this.isPlaying = false;
+            if (onComplete) onComplete();
         });
-
-        this.animations.forEach(animation => {
-            masterTimeline.add(animation);
-        });
-
-        masterTimeline.play();
     }
 
     /**
      * Pauses all animations
      */
     pause() {
-        this.animations.forEach(animation => animation.pause());
+        this.animationManager.pause('loader');
+        this.animationManager.pause('logo');
+        this.animationManager.pause('content');
     }
 
     /**
      * Resumes all animations
      */
     resume() {
-        this.animations.forEach(animation => animation.resume());
+        this.animationManager.play('loader');
+        this.animationManager.play('logo');
+        this.animationManager.play('content');
     }
 
     /**
      * Resets all animations to their initial state
      */
     reset() {
-        this.animations.forEach(animation => animation.restart());
+        this.animationManager.reset('loader');
+        this.animationManager.reset('logo');
+        this.animationManager.reset('content');
         this.isPlaying = false;
     }
 }

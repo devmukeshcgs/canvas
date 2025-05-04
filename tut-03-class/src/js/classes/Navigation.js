@@ -1,4 +1,4 @@
-import { gsap } from 'gsap';
+import AnimationManager from '../utils/AnimationManager';
 
 /**
  * Navigation class handles the site navigation and menu interactions
@@ -8,7 +8,7 @@ class Navigation {
         this.initialized = false;
         this.isOpen = false;
         this.elements = {};
-        this.animations = [];
+        this.animationManager = new AnimationManager();
     }
 
     /**
@@ -53,23 +53,12 @@ class Navigation {
     }
 
     /**
-     * Sets up GSAP animations for navigation
+     * Sets up animations for navigation
      */
     setupAnimations() {
-        this.animations = {
-            open: this.createOpenAnimation(),
-            close: this.createCloseAnimation()
-        };
-    }
-
-    /**
-     * Creates animation for opening the menu
-     * @returns {GSAP.Timeline} The animation timeline
-     */
-    createOpenAnimation() {
-        return gsap.timeline({
-            paused: true,
-            defaults: { ease: 'power2.inOut' }
+        // Create menu open animation
+        this.animationManager.createTimeline('menuOpen', {
+            ease: 'power2.inOut'
         })
         .to(this.elements.menu, {
             opacity: 1,
@@ -80,16 +69,10 @@ class Navigation {
             opacity: 1,
             duration: 0.3
         }, '-=0.2');
-    }
 
-    /**
-     * Creates animation for closing the menu
-     * @returns {GSAP.Timeline} The animation timeline
-     */
-    createCloseAnimation() {
-        return gsap.timeline({
-            paused: true,
-            defaults: { ease: 'power2.inOut' }
+        // Create menu close animation
+        this.animationManager.createTimeline('menuClose', {
+            ease: 'power2.inOut'
         })
         .to(this.elements.overlay, {
             opacity: 0,
@@ -121,7 +104,7 @@ class Navigation {
         
         this.isOpen = true;
         document.body.style.overflow = 'hidden';
-        this.animations.open.play();
+        this.animationManager.play('menuOpen');
     }
 
     /**
@@ -132,7 +115,7 @@ class Navigation {
         
         this.isOpen = false;
         document.body.style.overflow = '';
-        this.animations.close.play();
+        this.animationManager.play('menuClose');
     }
 
     /**
