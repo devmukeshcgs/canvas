@@ -59,18 +59,18 @@ R.M = class {
     let animationConfig = {
       element: Select.el(config.el),
       easing: {
-        curve: config.easing || "linear"
+        curve: config.easing || "linear",
       },
       duration: {
         original: config.duration || 0,
-        current: 0
+        current: 0,
       },
       delay: config.delay || 0,
       callback: config.callback || null,
       round: config.round || 2,
       progress: 0,
       progressEnd: 0,
-      elapsedTime: 0
+      elapsedTime: 0,
     };
 
     animationConfig.elementLength = animationConfig.element.length;
@@ -100,7 +100,7 @@ R.M = class {
           start: config.properties[key][0],
           end: config.properties[key][1],
           current: config.properties[key][0],
-          unit: config.properties[key][2] || "%"
+          unit: config.properties[key][2] || "%",
         };
         animationConfig.propertyIndexes.push(key);
       }
@@ -111,10 +111,12 @@ R.M = class {
       animationConfig.svg = {
         type: config.svg.type,
         attribute: config.svg.type === "polygon" ? "points" : "d",
-        start: config.svg.start || Svg.getInitialValues(animationConfig.element[0], config.svg.type),
+        start:
+          config.svg.start ||
+          Svg.getInitialValues(animationConfig.element[0], config.svg.type),
         end: config.svg.end,
         current: config.svg.start,
-        values: []
+        values: [],
       };
     }
 
@@ -123,23 +125,36 @@ R.M = class {
       animationConfig.line = {
         dashed: config.line.dashed,
         coefficients: {
-          start: config.line.start !== undefined ? (100 - config.line.start) / 100 : 1,
-          end: config.line.end !== undefined ? (100 - config.line.end) / 100 : 0
+          start:
+            config.line.start !== undefined
+              ? (100 - config.line.start) / 100
+              : 1,
+          end:
+            config.line.end !== undefined ? (100 - config.line.end) / 100 : 0,
         },
         pathLengths: [],
         start: [],
         end: [],
-        current: []
+        current: [],
       };
 
       // Initialize line path lengths and styles
       for (let i = 0; i < animationConfig.elementLength; i++) {
         const element = config.line.elementWidth || animationConfig.element[i];
         animationConfig.line.pathLengths[i] = Svg.getShapeLength(element);
-        const dashedPattern = config.line.dashed ? this.createDashedPattern(config.line.dashed, animationConfig.line.pathLengths[i]) : animationConfig.line.pathLengths[i];
+        const dashedPattern = config.line.dashed
+          ? this.createDashedPattern(
+              config.line.dashed,
+              animationConfig.line.pathLengths[i]
+            )
+          : animationConfig.line.pathLengths[i];
         animationConfig.element[i].style.strokeDasharray = dashedPattern;
-        animationConfig.line.start[i] = animationConfig.line.coefficients.start * animationConfig.line.pathLengths[i];
-        animationConfig.line.end[i] = animationConfig.line.coefficients.end * animationConfig.line.pathLengths[i];
+        animationConfig.line.start[i] =
+          animationConfig.line.coefficients.start *
+          animationConfig.line.pathLengths[i];
+        animationConfig.line.end[i] =
+          animationConfig.line.coefficients.end *
+          animationConfig.line.pathLengths[i];
         animationConfig.line.current[i] = animationConfig.line.start[i];
       }
     }
@@ -189,7 +204,8 @@ R.M = class {
       if (config.line?.end !== undefined) {
         this.config.line.coefficients.end = (100 - config.line.end) / 100;
         for (let i = 0; i < this.config.elementLength; i++) {
-          this.config.line.end[i] = this.config.line.coefficients.end * this.config.line.pathLengths[i];
+          this.config.line.end[i] =
+            this.config.line.coefficients.end * this.config.line.pathLengths[i];
         }
       } else {
         for (let i = 0; i < this.config.elementLength; i++) {
@@ -198,13 +214,18 @@ R.M = class {
       }
     }
 
-    this.config.duration.current = config.duration || this.config.duration.current;
+    this.config.duration.current =
+      config.duration || this.config.duration.current;
     this.config.easing.curve = config.easing || this.config.easing.curve;
-    this.config.easing.calc = typeof this.config.easing.curve === "string" ? Ease[this.config.easing.curve] : Ease4(this.config.easing.curve);
+    this.config.easing.calc =
+      typeof this.config.easing.curve === "string"
+        ? Ease[this.config.easing.curve]
+        : Ease4(this.config.easing.curve);
     this.config.delay = config.delay || this.config.delay;
     this.config.callback = config.callback || this.config.callback;
 
-    this.config.progress = this.config.progressEnd = this.config.duration.current === 0 ? 1 : 0;
+    this.config.progress = this.config.progressEnd =
+      this.config.duration.current === 0 ? 1 : 0;
     this.delay = new Delay(this.requestAnimationFrame, this.config.delay);
   }
 
@@ -221,7 +242,11 @@ R.M = class {
       if (this.config.callback) this.config.callback();
     } else {
       this.config.elapsedTime = Clamp(time, 0, this.config.duration.current);
-      this.config.progress = Clamp(this.config.elapsedTime / this.config.duration.current, 0, 1);
+      this.config.progress = Clamp(
+        this.config.elapsedTime / this.config.duration.current,
+        0,
+        1
+      );
       this.config.progressEnd = this.config.easing.calc(this.config.progress);
       this.config.updateMethod();
     }
@@ -237,13 +262,21 @@ R.M = class {
 
     let transform = "";
     if (this.config.propertyIndexes.x) {
-      transform += `translate3d(${properties[this.config.propertyIndexes.x].current + properties[this.config.propertyIndexes.x].unit}, 0, 0) `;
+      transform += `translate3d(${
+        properties[this.config.propertyIndexes.x].current +
+        properties[this.config.propertyIndexes.x].unit
+      }, 0, 0) `;
     }
     if (this.config.propertyIndexes.y) {
-      transform += `translate3d(0, ${properties[this.config.propertyIndexes.y].current + properties[this.config.propertyIndexes.y].unit}, 0) `;
+      transform += `translate3d(0, ${
+        properties[this.config.propertyIndexes.y].current +
+        properties[this.config.propertyIndexes.y].unit
+      }, 0) `;
     }
     if (this.config.propertyIndexes.r) {
-      transform += `${properties[this.config.propertyIndexes.r].name}(${properties[this.config.propertyIndexes.r].current}deg) `;
+      transform += `${properties[this.config.propertyIndexes.r].name}(${
+        properties[this.config.propertyIndexes.r].current
+      }deg) `;
     }
 
     if (transform) {
@@ -257,7 +290,8 @@ R.M = class {
     if (this.config.propertyIndexes.o) {
       for (let i = 0; i < this.config.elementLength; i++) {
         if (this.config.element[i]) {
-          this.config.element[i].style.opacity = properties[this.config.propertyIndexes.o].current;
+          this.config.element[i].style.opacity =
+            properties[this.config.propertyIndexes.o].current;
         }
       }
     }
@@ -269,7 +303,9 @@ R.M = class {
     let currentTemp = "";
 
     for (let i = 0; i < svg.values.length; i++) {
-      svg.values[i] = isNaN(svg.start[i]) ? svg.start[i] : this.lerp(svg.start[i], svg.end[i]);
+      svg.values[i] = isNaN(svg.start[i])
+        ? svg.start[i]
+        : this.lerp(svg.start[i], svg.end[i]);
       currentTemp += svg.values[i] + " ";
     }
 
@@ -307,7 +343,7 @@ R.M = class {
   static createDashedPattern(pattern, pathLength) {
     // Create dashed pattern for line animation
   }
-}
+};
 ////////////////////////////////
 // Binds methods from an array to the given object
 R.BM = (object, methods) => {
@@ -322,8 +358,8 @@ R.BM = (object, methods) => {
 // Timeline
 R.TL = class {
   constructor() {
-    this.animations = [];  // Store animations
-    this.totalDelay = 0;   // Total delay before the timeline starts
+    this.animations = []; // Store animations
+    this.totalDelay = 0; // Total delay before the timeline starts
   }
 
   // Add an animation to the timeline
@@ -355,7 +391,7 @@ R.TL = class {
       this.animations[i][method](animationConfig);
     }
   }
-}
+};
 ////////////////////////////////
 // Clamps a value `t` within a range defined by `e` (min) and `i` (max).
 R.Clamp = (value, min, max) => {
@@ -363,7 +399,7 @@ R.Clamp = (value, min, max) => {
 };
 
 // Creates a deep clone of an object `t`.
-R.Clone = object => {
+R.Clone = (object) => {
   return JSON.parse(JSON.stringify(object));
 };
 ///////////////////////////////
@@ -372,7 +408,7 @@ R.Delay = class {
   constructor(callback, duration) {
     this.callback = callback; // Function to be called after delay
     this.duration = duration; // Duration of the delay
-    this.frameRequest = new RafRequest(this.loop); // RAF request for the loop
+    this.frameRequest = new R.RafR(this.loop); // RAF request for the loop
   }
 
   // Start the delay, either immediately call the callback or run the animation loop
@@ -400,7 +436,7 @@ R.Delay = class {
       this.callback(); // Execute the callback
     }
   }
-}
+};
 ///////////////////////////////
 // Calculates the distance between two points (t, e) using the Pythagorean theorem
 R.Dist = (x, y) => {
@@ -410,42 +446,57 @@ R.Dist = (x, y) => {
 ///////////////////////////////
 R.Ease = {
   // Linear easing
-  linear: t => t,
+  linear: (t) => t,
 
   // Ease-In functions
-  easeIn1: t => 1 - Math.cos(t * (0.5 * Math.PI)),
-  easeIn2: t => t * t,
-  easeIn3: t => t * t * t,
-  easeIn4: t => t * t * t * t,
-  easeIn5: t => t * t * t * t * t,
-  easeIn6: t => t === 0 ? 0 : 2 ** (10 * (t - 1)),
+  easeIn1: (t) => 1 - Math.cos(t * (0.5 * Math.PI)),
+  easeIn2: (t) => t * t,
+  easeIn3: (t) => t * t * t,
+  easeIn4: (t) => t * t * t * t,
+  easeIn5: (t) => t * t * t * t * t,
+  easeIn6: (t) => (t === 0 ? 0 : 2 ** (10 * (t - 1))),
 
   // Ease-Out functions
-  easeOut1: t => Math.sin(t * (0.5 * Math.PI)),
-  easeOut2: t => t * (2 - t),
-  easeOut3: t => --t * t * t + 1,
-  easeOut4: t => 1 - --t * t * t * t,
-  easeOut5: t => 1 + --t * t * t * t * t,
-  easeOut6: t => t === 1 ? 1 : 1 - 2 ** (-10 * t),
+  easeOut1: (t) => Math.sin(t * (0.5 * Math.PI)),
+  easeOut2: (t) => t * (2 - t),
+  easeOut3: (t) => --t * t * t + 1,
+  easeOut4: (t) => 1 - --t * t * t * t,
+  easeOut5: (t) => 1 + --t * t * t * t * t,
+  easeOut6: (t) => (t === 1 ? 1 : 1 - 2 ** (-10 * t)),
 
   // Ease-In-Out functions
-  easeInOut1: t => -0.5 * (Math.cos(Math.PI * t) - 1),
-  easeInOut2: t => t < 0.5 ? 2 * t * t : (4 - 2 * t) * t - 1,
-  easeInOut3: t => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1,
-  easeInOut4: t => t < 0.5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t,
-  easeInOut5: t => t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t,
-  easeInOut6: t => t === 0 || t === 1 ? t : (t /= 0.5) < 1 ? 0.5 * 2 ** (10 * (t - 1)) : 0.5 * (2 - 2 ** (-10 * --t))
+  easeInOut1: (t) => -0.5 * (Math.cos(Math.PI * t) - 1),
+  easeInOut2: (t) => (t < 0.5 ? 2 * t * t : (4 - 2 * t) * t - 1),
+  easeInOut3: (t) =>
+    t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1,
+  easeInOut4: (t) => (t < 0.5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t),
+  easeInOut5: (t) =>
+    t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t,
+  easeInOut6: (t) =>
+    t === 0 || t === 1
+      ? t
+      : (t /= 0.5) < 1
+      ? 0.5 * 2 ** (10 * (t - 1))
+      : 0.5 * (2 - 2 ** (-10 * --t)),
 };
 
 ///////////////////////////////
-R.r0 = (t, e) => 1 - 3 * e + 3 * t,
-  R.r1 = (t, e) => 3 * e - 6 * t,
-  R.r2 = (t, e, i) => ((R.r0(e, i) * t + R.r1(e, i)) * t + 3 * e) * t,
-  R.r3 = (t, e, i) => 3 * R.r0(e, i) * t * t + 2 * R.r1(e, i) * t + 3 * e,
+(R.r0 = (t, e) => 1 - 3 * e + 3 * t),
+  (R.r1 = (t, e) => 3 * e - 6 * t),
+  (R.r2 = (t, e, i) => ((R.r0(e, i) * t + R.r1(e, i)) * t + 3 * e) * t),
+  (R.r3 = (t, e, i) => 3 * R.r0(e, i) * t * t + 2 * R.r1(e, i) * t + 3 * e),
   ///////////////////////////////
   //findBezierRoot
-  R.r4 = (targetValue, lowerBound, upperBound, controlPoint1, controlPoint2) => {
-    let midpoint, error, iterations = 0;
+  (R.r4 = (
+    targetValue,
+    lowerBound,
+    upperBound,
+    controlPoint1,
+    controlPoint2
+  ) => {
+    let midpoint,
+      error,
+      iterations = 0;
 
     // Iterate to find the root of the Bezier curve
     while (iterations < 10) {
@@ -453,7 +504,8 @@ R.r0 = (t, e) => 1 - 3 * e + 3 * t,
       midpoint = lowerBound + 0.5 * (upperBound - lowerBound);
 
       // Evaluate the curve at the midpoint
-      error = R.evaluateBezier(midpoint, controlPoint1, controlPoint2) - targetValue;
+      error =
+        R.evaluateBezier(midpoint, controlPoint1, controlPoint2) - targetValue;
 
       // Adjust bounds based on the error
       if (error > 0) {
@@ -471,14 +523,18 @@ R.r0 = (t, e) => 1 - 3 * e + 3 * t,
     }
 
     return midpoint;
-  }
+  });
 ///////////////////////////////
 //solveBezierRoot
 R.r5 = (targetValue, initialGuess, controlPoint1, controlPoint2) => {
   // Iterate up to 4 times to refine the root of the Bezier curve
   for (let iteration = 0; iteration < 4; ++iteration) {
     // Calculate the derivative of the Bezier curve at the current guess
-    const derivative = R.evaluateBezierDerivative(initialGuess, controlPoint1, controlPoint2);
+    const derivative = R.evaluateBezierDerivative(
+      initialGuess,
+      controlPoint1,
+      controlPoint2
+    );
 
     // If the derivative is zero, return the current guess
     if (derivative === 0) {
@@ -486,30 +542,37 @@ R.r5 = (targetValue, initialGuess, controlPoint1, controlPoint2) => {
     }
 
     // Refine the initial guess based on the error and derivative
-    const error = R.evaluateBezier(initialGuess, controlPoint1, controlPoint2) - targetValue;
+    const error =
+      R.evaluateBezier(initialGuess, controlPoint1, controlPoint2) -
+      targetValue;
     initialGuess -= error / derivative;
   }
 
   // Return the refined guess
   return initialGuess;
-}
+};
 ///////////////////////////////
 //createEaseFunction
 R.Ease4 = (controlPoints) => {
-  const [controlPoint1, controlPoint2, controlPoint3, controlPoint4] = controlPoints;
+  const [controlPoint1, controlPoint2, controlPoint3, controlPoint4] =
+    controlPoints;
   const lookupTable = new Float32Array(11);
 
   // If control points differ, populate the lookup table
   if (controlPoint1 !== controlPoint2 || controlPoint3 !== controlPoint4) {
     for (let i = 0; i < 11; ++i) {
-      lookupTable[i] = R.evaluateBezier(.1 * i, controlPoint1, controlPoint3);
+      lookupTable[i] = R.evaluateBezier(0.1 * i, controlPoint1, controlPoint3);
     }
   }
 
   // Return the easing function
   return (t) => {
     // If control points are equal or t is 0 or 1, return t directly
-    if (controlPoint1 === controlPoint2 && controlPoint3 === controlPoint4 || t === 0 || t === 1) {
+    if (
+      (controlPoint1 === controlPoint2 && controlPoint3 === controlPoint4) ||
+      t === 0 ||
+      t === 1
+    ) {
       return t;
     }
 
@@ -520,20 +583,35 @@ R.Ease4 = (controlPoints) => {
         baseIndex += 0.1;
       }
 
-      const relativeT = (t - lookupTable[baseIndex]) / (lookupTable[baseIndex + 1] - lookupTable[baseIndex]);
+      const relativeT =
+        (t - lookupTable[baseIndex]) /
+        (lookupTable[baseIndex + 1] - lookupTable[baseIndex]);
       const adjustedT = baseIndex + 0.1 * relativeT;
 
-      const derivative = R.evaluateBezierDerivative(adjustedT, controlPoint1, controlPoint3);
+      const derivative = R.evaluateBezierDerivative(
+        adjustedT,
+        controlPoint1,
+        controlPoint3
+      );
       if (Math.abs(derivative) >= 0.001) {
         return R.solveBezierRoot(t, adjustedT, controlPoint1, controlPoint3);
       }
 
-      return derivative === 0 ? adjustedT : R.findRoot(t, derivative, adjustedT, adjustedT + 0.1, controlPoint1, controlPoint3);
+      return derivative === 0
+        ? adjustedT
+        : R.findRoot(
+            t,
+            derivative,
+            adjustedT,
+            adjustedT + 0.1,
+            controlPoint1,
+            controlPoint3
+          );
     };
 
     return interpolation(t);
   };
-}
+};
 ///////////////////////////////
 R.Fetch = (requestConfig) => {
   const isJson = requestConfig.type === "json";
@@ -543,9 +621,11 @@ R.Fetch = (requestConfig) => {
   const fetchConfig = {
     method: isJson ? "POST" : "GET",
     headers: new Headers({
-      "Content-Type": isJson ? "application/x-www-form-urlencoded" : "text/html"
+      "Content-Type": isJson
+        ? "application/x-www-form-urlencoded"
+        : "text/html",
     }),
-    mode: "same-origin"
+    mode: "same-origin",
   };
 
   // If the request is JSON, include the body in the configuration
@@ -555,7 +635,7 @@ R.Fetch = (requestConfig) => {
 
   // Make the fetch request
   fetch(requestConfig.url, fetchConfig)
-    .then(response => {
+    .then((response) => {
       if (response.ok) {
         return response[responseType](); // Return the parsed response based on type (json or text)
       } else {
@@ -563,13 +643,13 @@ R.Fetch = (requestConfig) => {
         requestConfig.error && requestConfig.error();
       }
     })
-    .then(parsedData => {
+    .then((parsedData) => {
       // Call the success callback with the parsed data
       requestConfig.success(parsedData);
     })
-    .catch(err => {
+    .catch((err) => {
       // Handle fetch errors (network issues, etc.)
-      console.error('Fetch error:', err);
+      console.error("Fetch error:", err);
       requestConfig.error && requestConfig.error(err);
     });
 };
@@ -581,23 +661,23 @@ R.has = (object, property) => object.hasOwnProperty(property);
 ///////////////////////////////
 //isType
 R.Is = {
-  isString: value => typeof value === "string",
-  isObject: value => value === Object(value),
-  isArray: value => Array.isArray(value),
-  isDefined: value => value !== undefined,
-  isUndefined: value => value === undefined
+  isString: (value) => typeof value === "string",
+  isObject: (value) => value === Object(value),
+  isArray: (value) => Array.isArray(value),
+  isDefined: (value) => value !== undefined,
+  isUndefined: (value) => value === undefined,
 };
 
 ///////////////////////////////
 // Modulo function ensuring positive results
-R.Mod = (value, divisor) => (value % divisor + divisor) % divisor;
+R.Mod = (value, divisor) => ((value % divisor) + divisor) % divisor;
 
 // Pad number with leading zeros
 R.Pad = (value, length) => ("000" + value).slice(-length);
 
 // Parametric curve calculation
 R.PCurve = (t, e, i) => {
-  return ((e + i) ** (e + i)) / (e ** e * i ** i) * t ** e * (1 - t) ** i;
+  return ((e + i) ** (e + i) / (e ** e * i ** i)) * t ** e * (1 - t) ** i;
 };
 
 // Rounded value with precision
@@ -609,7 +689,7 @@ R.R = (value, precision) => {
 ///////////////////////////////
 R.Select = {
   // Select elements based on selector type (ID or class)
-  getElement: selector => {
+  getElement: (selector) => {
     let elements = [];
     let identifier;
 
@@ -628,12 +708,12 @@ R.Select = {
   },
 
   // Determine the type of selector: ID or class
-  getSelectorType: selector => {
+  getSelectorType: (selector) => {
     return selector.charAt(0) === "#" ? "id" : "class";
   },
 
   // Get the name of the selector (without the leading # or .)
-  getName: selector => selector.substring(1),
+  getName: (selector) => selector.substring(1),
 };
 
 ///////////////////////////////
@@ -661,8 +741,8 @@ R.L = (selector, eventType, eventAction, eventListener) => {
 ///////////////////////////////
 let Tab = class {
   constructor() {
-    this.tabs = [];  // Array to hold the tabs
-    this.lastPauseTime = 0;  // Track the last time the tab was paused
+    this.tabs = []; // Array to hold the tabs
+    this.lastPauseTime = 0; // Track the last time the tab was paused
     R.BM(this, ["handleVisibilityChange"]);
 
     // Attach the visibility change event listener to the document
@@ -697,7 +777,7 @@ let Tab = class {
       this.tabs[i][eventAction](deltaTime);
     }
   }
-}
+};
 
 ///////////////////////////////
 // Instantiate a new Tab object and assign it to `RD`
@@ -706,150 +786,636 @@ let RD = (R.Tab = new Tab());
 let FR = 1000 / 60;
 
 ///////////////////////////////
-class Raf {
-  constructor() {
-    this.callbacks = [];
-    this.isRunning = true;
-    this.timeStart = null;
+let Raf =
+  ((R.Raf = class {
+    constructor() {
+      this.callbacks = [];
+      this.isRunning = true;
+      this.timeStart = null;
 
-    // Bind methods
-    this.bindMethods(["loop", "pause", "resume"]);
+      // Bind methods
+      this.bindMethods(["loop", "pause", "resume"]);
 
-    // Add the start/stop actions to the Tab
-    R.Tab.addTab({
-      stop: this.pause,
-      start: this.resume
-    });
+      // Add the start/stop actions to the Tab
+      R.Tab.addTab({
+        stop: this.pause,
+        start: this.resume,
+      });
 
-    // Start the animation loop
-    this.startLoop();
-  }
-
-  // Method to stop the animation loop
-  pause() {
-    this.isRunning = false;
-  }
-
-  // Method to resume the animation loop
-  resume(currentTime) {
-    this.timeStart = null;
-    let duration = this.getCallbackCount();
-
-    for (let i = 0; i < duration; i++) {
-      this.callbacks[i].startTime += currentTime;
+      // Start the animation loop
+      this.startLoop();
     }
 
-    this.isRunning = true;
-  }
-
-  // Add a new callback to the animation loop
-  add(callback) {
-    this.callbacks.push(callback);
-  }
-
-  // Remove a callback by its ID
-  remove(callbackId) {
-    let index = this.getCallbackCount();
-    while (index--) {
-      if (this.callbacks[index].id === callbackId) {
-        this.callbacks.splice(index, 1);
-        return;
-      }
+    // Method to stop the animation loop
+    pause() {
+      this.isRunning = false;
     }
-  }
 
-  // The animation loop function
-  loop(currentTime) {
-    if (this.isRunning) {
-      if (!this.timeStart) this.timeStart = currentTime;
-
-      // Calculate the time difference between frames
-      const timeElapsed = (currentTime - this.timeStart) / FR;
-      this.timeStart = currentTime;
-
+    // Method to resume the animation loop
+    resume(currentTime) {
+      this.timeStart = null;
       let duration = this.getCallbackCount();
 
       for (let i = 0; i < duration; i++) {
-        let callbackData = this.callbacks[i];
+        this.callbacks[i].startTime += currentTime;
+      }
 
-        if (R.Is.def(callbackData)) {
-          if (!callbackData.startTime) callbackData.startTime = currentTime;
+      this.isRunning = true;
+    }
 
-          // Calculate the time delta for the callback
-          let deltaTime = currentTime - callbackData.startTime;
+    // Add a new callback to the animation loop
+    add(callback) {
+      this.callbacks.push(callback);
+    }
 
-          // Execute the callback with the time delta
-          callbackData.callback(deltaTime);
+    // Remove a callback by its ID
+    remove(callbackId) {
+      let index = this.getCallbackCount();
+      while (index--) {
+        if (this.callbacks[index].id === callbackId) {
+          this.callbacks.splice(index, 1);
+          return;
         }
       }
     }
 
+    // The animation loop function
+    loop(currentTime) {
+      if (this.isRunning) {
+        if (!this.timeStart) this.timeStart = currentTime;
+
+        // Calculate the time difference between frames
+        const timeElapsed = (currentTime - this.timeStart) / FR;
+        this.timeStart = currentTime;
+
+        let duration = this.getCallbackCount();
+
+        for (let i = 0; i < duration; i++) {
+          let callbackData = this.callbacks[i];
+
+          if (R.Is.def(callbackData)) {
+            if (!callbackData.startTime) callbackData.startTime = currentTime;
+
+            // Calculate the time delta for the callback
+            let deltaTime = currentTime - callbackData.startTime;
+
+            // Execute the callback with the time delta
+            callbackData.callback(deltaTime);
+          }
+        }
+      }
+
+      // Request the next animation frame
+      this.startLoop();
+    }
+
     // Request the next animation frame
-    this.startLoop();
-  }
+    startLoop() {
+      requestAnimationFrame(this.loop);
+    }
 
-  // Request the next animation frame
-  startLoop() {
-    requestAnimationFrame(this.loop);
-  }
+    // Get the number of callbacks in the loop
+    getCallbackCount() {
+      return this.callbacks.length;
+    }
 
-  // Get the number of callbacks in the loop
-  getCallbackCount() {
-    return this.callbacks.length;
-  }
+    // Bind methods to the current instance
+    bindMethods(methods) {
+      methods.forEach((method) => {
+        this[method] = this[method].bind(this);
+      });
+    }
+  }),
+  new R.Raf());
+let RafId = 0;
 
-  // Bind methods to the current instance
-  bindMethods(methods) {
-    methods.forEach(method => {
-      this[method] = this[method].bind(this);
-    });
+///////////////////////////////
+let Ro =
+    ((R.RafR = class {
+      constructor(t) {
+        (this.cb = t), (this.on = !1), (this.id = RafId), RafId++;
+      }
+      run() {
+        this.on ||
+          (Raf.add({
+            id: this.id,
+            cb: this.cb,
+          }),
+          (this.on = !0));
+      }
+      stop() {
+        this.on && (Raf.remove(this.id), (this.on = !1));
+      }
+    }),
+    (R.Rand = {
+      range: (t, e, i) => R.R(Math.random() * (e - t) + t, i),
+      uniq: (e) => {
+        var i = [];
+        for (let t = 0; t < e; t++) i[t] = t;
+        let t = e;
+        for (var s, r; t--; )
+          (s = ~~(Math.random() * (t + 1))),
+            (r = i[t]),
+            (i[t] = i[s]),
+            (i[s] = r);
+        return i;
+      },
+    }),
+    (R.Snif = {
+      uA: navigator.userAgent.toLowerCase(),
+      get iPadIOS13() {
+        return (
+          "MacIntel" === navigator.platform && 1 < navigator.maxTouchPoints
+        );
+      },
+      get isMobile() {
+        return (
+          /mobi|android|tablet|ipad|iphone/.test(this.uA) || this.iPadIOS13
+        );
+      },
+      get isFirefox() {
+        return -1 < this.uA.indexOf("firefox");
+      },
+    }),
+    (R.Svg = {
+      shapeL: (s) => {
+        var t, e, i, r;
+        if ("circle" === s.tagName) return 2 * R.Ga(s, "r") * Math.PI;
+        if ("line" === s.tagName)
+          return (
+            (t = R.Ga(s, "x1")),
+            (e = R.Ga(s, "x2")),
+            (i = R.Ga(s, "y1")),
+            (r = R.Ga(s, "y2")),
+            Math.sqrt((e -= t) * e + (r -= i) * r)
+          );
+        if ("polyline" !== s.tagName) return s.getTotalLength();
+        {
+          let e = 0,
+            i = 0;
+          var a = s.points.numberOfItems;
+          for (let t = 0; t < a; t++) {
+            var h = s.points.getItem(t);
+            0 < t && (e += R.Dist(h.x - i.x, h.y - i.y)), (i = h);
+          }
+          return e;
+        }
+      },
+      split: (t) => {
+        var e = [],
+          i = t.split(" "),
+          s = i.length;
+        for (let t = 0; t < s; t++) {
+          var r = i[t].split(","),
+            a = r.length;
+          for (let t = 0; t < a; t++) {
+            var h = r[t],
+              h = isNaN(h) ? h : +h;
+            e.push(h);
+          }
+        }
+        return e;
+      },
+    }),
+    (R.Timer = class {
+      constructor(t) {
+        this._ = new R.Delay(t.cb, t.delay);
+      }
+      run() {
+        this._.stop(), this._.run();
+      }
+    }),
+    (R.Une = (t, e, i) => 0 !== R.R(Math.abs(t - e), i)),
+    (R.Cr = (t) => document.createElement(t)),
+    (R.g = (t, e, i) => (t || document)["getElement" + e](i)),
+    (R.G = {
+      id: (t, e) => R.g(e, "ById", t),
+      class: (t, e) => R.g(e, "sByClassName", t),
+      tag: (t, e) => R.g(e, "sByTagName", t),
+    }),
+    (R.Ga = (t, e) => t.getAttribute(e)),
+    (R.index = (e, i) => {
+      var s = i.length;
+      for (let t = 0; t < s; t++) if (e === i[t]) return t;
+      return -1;
+    }),
+    (R.Index = {
+      list: (t) => R.index(t, t.parentNode.children),
+      class: (t, e, i) => R.index(t, R.G.class(e, i)),
+    }),
+    (R.PD = (t) => {
+      t.cancelable && t.preventDefault();
+    }),
+    (R.RO = class {
+      constructor() {
+        (this.eT = R.Snif.isMobile ? "orientationchange" : "resize"),
+          (this.tick = !1),
+          (this._ = []),
+          R.BM(this, ["fn", "gRaf", "run"]),
+          (this.t = new R.Timer({
+            delay: 40,
+            cb: this.gRaf,
+          })),
+          (this.r = new R.RafR(this.run)),
+          R.L(window, "a", this.eT, this.fn);
+      }
+      add(t) {
+        this._.push(t);
+      }
+      remove(t) {
+        let e = this._.length;
+        for (; e--; ) if (this._[e].id === t) return void this._.splice(e, 1);
+      }
+      fn(t) {
+        (this.e = t), this.t.run();
+      }
+      gRaf() {
+        this.tick || ((this.tick = !0), this.r.run());
+      }
+      run() {
+        let t = 0;
+        for (var e = this._.length; t < e; ) this._[t].cb(this.e), t++;
+        this.r.stop(), (this.tick = !1);
+      }
+    }),
+    new R.RO()),
+  RoId = 0;
+///////////////////////////////
+function Router(newUrl) {
+  const appState = _A; // Assuming `_A` is the main application state object
+  const newPage = appState.config.routes[newUrl].page; // Get the new page from the route config
+  const currentRoute = appState.route.new; // Current route being displayed
+  const previousRoute = appState.route.old; // Previous route displayed
+
+  // Update the old route to the current route
+  appState.route.old = currentRoute;
+
+  // Update the new route with the new URL and page
+  appState.route.new = {
+    url: newUrl,
+    page: newPage,
+  };
+
+  // Set visibility states for the current and new page
+  appState.is[currentRoute.page] = false; // Mark the current page as not active
+  appState.is[newPage] = true; // Mark the new page as active
+
+  // Update historical visibility states for previous and current page
+  if (previousRoute.page) {
+    appState.was[previousRoute.page] = false; // Mark the previous page as no longer active in history
   }
+  appState.was[currentRoute.page] = true; // Mark the current page as active in history
 }
 
-// Initialize the Raf class
-new Raf();
-
-///////////////////////////////
-///////////////////////////////
-///////////////////////////////
-///////////////////////////////
-///////////////////////////////
 ///////////////////////////////
 R.ROR = class {
   constructor(callback) {
-    if (typeof callback !== "function") {
-      throw new TypeError("Callback must be a function.");
-    }
-
-    this.cb = callback;
-    this.id = RoId++;
+    this.callback = callback; // Store the callback function
+    this.id = RoId; // Assign a unique ID to this instance
+    RoId++; // Increment the global ID counter
   }
 
+  /**
+   * Activate the callback by adding it to the Ro instance.
+   */
   on() {
-    if (!this.cb) {
-      console.warn("Cannot register callback: callback is undefined.");
-      return;
-    }
-
     Ro.add({
       id: this.id,
-      cb: this.cb,
+      cb: this.callback,
     });
   }
 
+  /**
+   * Deactivate the callback by removing it from the Ro instance.
+   */
   off() {
     Ro.remove(this.id);
   }
 };
 
+///////////////////////////////
+(R.O = (t, e) => {
+  t.style.opacity = e;
+}),
+  (R.pe = (t, e) => {
+    t.style.pointerEvents = e;
+  });
+///////////////////////////////
+R.PE = {
+  all: (element) => {
+    R.pe(element, "all");
+  },
+  none: (element) => {
+    R.pe(element, "none");
+  },
+};
+///////////////////////////////
+R.T = (t, e, i, s) => {
+  s = R.Is.und(s) ? "%" : s;
+  t.style.transform = "translate3d(" + e + s + "," + i + s + ",0)"
+}
 
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+///////////////////////////////
+function create() {
+  var t = new Float32Array(16);
+  return t[0] = 1,
+  t[5] = 1,
+  t[10] = 1,
+  t[15] = 1,
+  t
+}
+function identity(t) {
+  return t[0] = 1,
+  t[1] = 0,
+  t[2] = 0,
+  t[3] = 0,
+  t[4] = 0,
+  t[5] = 1,
+  t[6] = 0,
+  t[7] = 0,
+  t[8] = 0,
+  t[9] = 0,
+  t[10] = 1,
+  t[11] = 0,
+  t[12] = 0,
+  t[13] = 0,
+  t[14] = 0,
+  t[15] = 1,
+  t
+}
+function invert(t, e) {
+  var i = e[0]
+    , s = e[1]
+    , r = e[2]
+    , a = e[3]
+    , h = e[4]
+    , l = e[5]
+    , o = e[6]
+    , n = e[7]
+    , p = e[8]
+    , d = e[9]
+    , c = e[10]
+    , g = e[11]
+    , u = e[12]
+    , m = e[13]
+    , v = e[14]
+    , e = e[15]
+    , f = c * e
+    , R = v * g
+    , x = o * e
+    , w = v * n
+    , y = o * g
+    , L = c * n
+    , _ = r * e
+    , A = v * a
+    , b = r * g
+    , S = c * a
+    , M = r * n
+    , T = o * a
+    , F = p * m
+    , H = u * d
+    , P = h * m
+    , G = u * l
+    , B = h * d
+    , E = p * l
+    , k = i * m
+    , z = u * s
+    , I = i * d
+    , C = p * s
+    , O = i * l
+    , D = h * s
+    , W = f * l + w * d + y * m - (R * l + x * d + L * m)
+    , N = R * s + _ * d + S * m - (f * s + A * d + b * m)
+    , m = x * s + A * l + M * m - (w * s + _ * l + T * m)
+    , s = L * s + b * l + T * d - (y * s + S * l + M * d)
+    , l = 1 / (i * W + h * N + p * m + u * s);
+  return t[0] = l * W,
+  t[1] = l * N,
+  t[2] = l * m,
+  t[3] = l * s,
+  t[4] = l * (R * h + x * p + L * u - (f * h + w * p + y * u)),
+  t[5] = l * (f * i + A * p + b * u - (R * i + _ * p + S * u)),
+  t[6] = l * (w * i + _ * h + T * u - (x * i + A * h + M * u)),
+  t[7] = l * (y * i + S * h + M * p - (L * i + b * h + T * p)),
+  t[8] = l * (F * n + G * g + B * e - (H * n + P * g + E * e)),
+  t[9] = l * (H * a + k * g + C * e - (F * a + z * g + I * e)),
+  t[10] = l * (P * a + z * n + O * e - (G * a + k * n + D * e)),
+  t[11] = l * (E * a + I * n + D * g - (B * a + C * n + O * g)),
+  t[12] = l * (P * c + E * v + H * o - (B * v + F * o + G * c)),
+  t[13] = l * (I * v + F * r + z * c - (k * c + C * v + H * r)),
+  t[14] = l * (k * o + D * v + G * r - (O * v + P * r + z * o)),
+  t[15] = l * (O * c + B * r + C * o - (I * o + D * c + E * r)),
+  t
+}
+function perspective(t, e, i, s, r) {
+  var e = 1 / Math.tan(.5 * e)
+    , a = 1 / (s - r);
+  return t[0] = e / i,
+  t[1] = 0,
+  t[2] = 0,
+  t[3] = 0,
+  t[4] = 0,
+  t[5] = e,
+  t[6] = 0,
+  t[7] = 0,
+  t[8] = 0,
+  t[9] = 0,
+  t[10] = (r + s) * a,
+  t[11] = -1,
+  t[12] = 0,
+  t[13] = 0,
+  t[14] = 2 * r * s * a,
+  t[15] = 0,
+  t
+}
+function multiplyFn(t, e) {
+  return multiply(t, t, e)
+}
+function multiply(t, e, i) {
+  var s = i[0]
+    , r = i[1]
+    , a = i[2]
+    , h = i[3]
+    , l = i[4]
+    , o = i[5]
+    , n = i[6]
+    , p = i[7]
+    , d = i[8]
+    , c = i[9]
+    , g = i[10]
+    , u = i[11]
+    , m = i[12]
+    , v = i[13]
+    , f = i[14]
+    , i = i[15]
+    , R = e[0]
+    , x = e[1]
+    , w = e[2]
+    , y = e[3]
+    , L = e[4]
+    , _ = e[5]
+    , A = e[6]
+    , b = e[7]
+    , S = e[8]
+    , M = e[9]
+    , T = e[10]
+    , F = e[11]
+    , H = e[12]
+    , P = e[13]
+    , G = e[14]
+    , e = e[15];
+  return t[0] = s * R + r * L + a * S + h * H,
+  t[1] = s * x + r * _ + a * M + h * P,
+  t[2] = s * w + r * A + a * T + h * G,
+  t[3] = s * y + r * b + a * F + h * e,
+  t[4] = l * R + o * L + n * S + p * H,
+  t[5] = l * x + o * _ + n * M + p * P,
+  t[6] = l * w + o * A + n * T + p * G,
+  t[7] = l * y + o * b + n * F + p * e,
+  t[8] = d * R + c * L + g * S + u * H,
+  t[9] = d * x + c * _ + g * M + u * P,
+  t[10] = d * w + c * A + g * T + u * G,
+  t[11] = d * y + c * b + g * F + u * e,
+  t[12] = m * R + v * L + f * S + i * H,
+  t[13] = m * x + v * _ + f * M + i * P,
+  t[14] = m * w + v * A + f * T + i * G,
+  t[15] = m * y + v * b + f * F + i * e,
+  t
+}
+function translateFn(t, e) {
+  return translate(t, t, e)
+}
+function translate(t, e, i) {
+  var s, r, a, h, l, o, n, p, d, c, g, u, m = i[0], v = i[1], i = i[2];
+  return e === t ? (t[12] = e[0] * m + e[4] * v + e[8] * i + e[12],
+  t[13] = e[1] * m + e[5] * v + e[9] * i + e[13],
+  t[14] = e[2] * m + e[6] * v + e[10] * i + e[14],
+  t[15] = e[3] * m + e[7] * v + e[11] * i + e[15]) : (s = e[0],
+  r = e[1],
+  a = e[2],
+  h = e[3],
+  l = e[4],
+  o = e[5],
+  n = e[6],
+  p = e[7],
+  d = e[8],
+  c = e[9],
+  g = e[10],
+  u = e[11],
+  t[0] = s,
+  t[1] = r,
+  t[2] = a,
+  t[3] = h,
+  t[4] = l,
+  t[5] = o,
+  t[6] = n,
+  t[7] = p,
+  t[8] = d,
+  t[9] = c,
+  t[10] = g,
+  t[11] = u,
+  t[12] = s * m + l * v + d * i + e[12],
+  t[13] = r * m + o * v + c * i + e[13],
+  t[14] = a * m + n * v + g * i + e[14],
+  t[15] = h * m + p * v + u * i + e[15]),
+  t
+}
+function scaleFn(t, e) {
+  return scale(t, t, e)
+}
+function scale(t, e, i) {
+  var s = i[0]
+    , r = i[1]
+    , i = i[2];
+  return t[0] = e[0] * s,
+  t[1] = e[1] * s,
+  t[2] = e[2] * s,
+  t[3] = e[3] * s,
+  t[4] = e[4] * r,
+  t[5] = e[5] * r,
+  t[6] = e[6] * r,
+  t[7] = e[7] * r,
+  t[8] = e[8] * i,
+  t[9] = e[9] * i,
+  t[10] = e[10] * i,
+  t[11] = e[11] * i,
+  t[12] = e[12],
+  t[13] = e[13],
+  t[14] = e[14],
+  t[15] = e[15],
+  t
+}
 
+ 
+function Plane(t) {
+  var t = t.p
+    , e = {};
+  const i = t.pts.h
+    , s = t.pts.v
+    , r = i - 1
+    , a = s - 1
+    , h = 1 / r
+    , l = 1 / a;
+  var o = [];
+  let n = 0;
+  for (let t = 0; t < s; t++) {
+      var p = t * l - 1;
+      for (let t = 0; t < i; t++)
+          o[n++] = t * h,
+          o[n++] = p
+  }
+  e.pos = o;
+  var d = [];
+  let c = 0;
+  var g = s - 1
+    , u = s - 2
+    , m = i - 1;
+  for (let e = 0; e < g; e++) {
+      var v = i * e
+        , f = v + i;
+      for (let t = 0; t < i; t++) {
+          var R = f + t;
+          d[c++] = v + t,
+          d[c++] = R,
+          t === m && e < u && (d[c++] = R,
+          d[c++] = i * (e + 1))
+      }
+  }
+  e.index = d;
+  var x = [];
+  let w = 0;
+  for (let t = 0; t < s; t++) {
+      var y = 1 - t / a;
+      for (let t = 0; t < i; t++)
+          x[w++] = t / r,
+          x[w++] = y
+  }
+  return e.texture = x,
+  e
+}
 new Controller({
   device: "d",
   engine: Engine,
   transition: {
     intro: Intro,
-    mutation: Mutation
-  }
-})
-
+    mutation: Mutation,
+  },
+});
