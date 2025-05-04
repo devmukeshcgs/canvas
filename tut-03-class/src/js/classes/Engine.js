@@ -7,8 +7,6 @@ import WorkPage from "./WorkPage";
 import AboutPage from "./AboutPage";
 import ScrollIntersectionObserver from "./SIntersect";
 
-console.log("Engine class");
-
 class Engine {
     constructor() {
         const app = _A; // Global application state
@@ -19,10 +17,10 @@ class Engine {
         app.currentMode = "in";
 
         // Bind methods
-        R.BM(this, ["resize", "loop"]);
+        RR.BM(this, ["resize", "loop"]);
 
         // Initialize components
-        this.animationFrame = new R.RafR(this.loop);
+        this.animationFrame = new RR.RafR(this.loop);
         this.scrollHandler = new Scroll();
         this.lazyLoader = new LazyLoader();
         this.loadManager = new LoadManager();
@@ -76,7 +74,7 @@ class Engine {
 
     startApp() {
         // Set up resize observer and start animation loop
-        new R.ROR(this.handleResize).on();
+        new RR.ROR(this.handleResize).on();
         this.animationFrame.run();
     }
 

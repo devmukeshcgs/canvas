@@ -5,7 +5,7 @@ import Mutation from "./classes/Mutation";
 
 console.log("MAIN");
 // Define a global R object if it doesn't exist
-window.R = {};
+window.RR = {};
 
 /**
  * Inverse Lerp - calculates the interpolation factor between two values
@@ -14,7 +14,7 @@ window.R = {};
  * @param {number} value - Current value
  * @returns {number} Normalized value between 0 and 1
  */
-R.iLerp = (start, end, value) => R.Clamp((value - start) / (end - start), 0, 1);
+RR.iLerp = (start, end, value) => RR.Clamp((value - start) / (end - start), 0, 1);
 
 /**
  * Linear interpolation between two values
@@ -23,7 +23,7 @@ R.iLerp = (start, end, value) => R.Clamp((value - start) / (end - start), 0, 1);
  * @param {number} factor - Interpolation factor (0-1)
  * @returns {number} Interpolated value
  */
-R.Lerp = (start, end, factor) => start * (1 - factor) + end * factor;
+RR.Lerp = (start, end, factor) => start * (1 - factor) + end * factor;
 
 /**
  * Smooth damping function
@@ -32,8 +32,8 @@ R.Lerp = (start, end, factor) => start * (1 - factor) + end * factor;
  * @param {number} smoothingFactor - Smoothing factor (0-1)
  * @returns {number} Damped value
  */
-R.Damp = (current, target, smoothingFactor) =>
-  R.Lerp(current, target, 1 - Math.exp(Math.log(1 - smoothingFactor) * RD));
+RR.Damp = (current, target, smoothingFactor) =>
+  RR.Lerp(current, target, 1 - Math.exp(Math.log(1 - smoothingFactor) * RD));
 
 /**
  * Remaps a value from one range to another
@@ -44,10 +44,10 @@ R.Damp = (current, target, smoothingFactor) =>
  * @param {number} value - Value to remap
  * @returns {number} Remapped value
  */
-R.Remap = (inStart, inEnd, outStart, outEnd, value) =>
-  R.Lerp(outStart, outEnd, R.iLerp(inStart, inEnd, value));
+RR.Remap = (inStart, inEnd, outStart, outEnd, value) =>
+  RR.Lerp(outStart, outEnd, RR.iLerp(inStart, inEnd, value));
 ////////////////////////////////
-R.M = class {
+RR.M = class {
   constructor(config) {
     // Initialize and assign properties
     this.config = this.initializeConfig(config);
@@ -346,7 +346,7 @@ R.M = class {
 };
 ////////////////////////////////
 // Binds methods from an array to the given object
-R.BM = (object, methods) => {
+RR.BM = (object, methods) => {
   let methodsCount = methods.length;
   for (let i = 0; i < methodsCount; i++) {
     const methodName = methods[i];
@@ -356,7 +356,7 @@ R.BM = (object, methods) => {
 ///////////////////////
 
 // Timeline
-R.TL = class {
+RR.TL = class {
   constructor() {
     this.animations = []; // Store animations
     this.totalDelay = 0; // Total delay before the timeline starts
@@ -394,21 +394,21 @@ R.TL = class {
 };
 ////////////////////////////////
 // Clamps a value `t` within a range defined by `e` (min) and `i` (max).
-R.Clamp = (value, min, max) => {
+RR.Clamp = (value, min, max) => {
   return value < min ? min : value > max ? max : value;
 };
 
 // Creates a deep clone of an object `t`.
-R.Clone = (object) => {
+RR.Clone = (object) => {
   return JSON.parse(JSON.stringify(object));
 };
 ///////////////////////////////
 // Delay
-R.Delay = class {
+RR.Delay = class {
   constructor(callback, duration) {
     this.callback = callback; // Function to be called after delay
     this.duration = duration; // Duration of the delay
-    this.frameRequest = new R.RafR(this.loop); // RAF request for the loop
+    this.frameRequest = new RR.RafR(this.loop); // RAF request for the loop
   }
 
   // Start the delay, either immediately call the callback or run the animation loop
@@ -428,10 +428,10 @@ R.Delay = class {
   // The loop method that runs every frame
   loop(timeElapsed) {
     // Clamp timeElapsed within the duration bounds
-    timeElapsed = R.Clamp(timeElapsed, 0, this.duration);
+    timeElapsed = RR.Clamp(timeElapsed, 0, this.duration);
 
     // Check if the delay duration is complete
-    if (R.Clamp(timeElapsed / this.duration, 0, 1) === 1) {
+    if (RR.Clamp(timeElapsed / this.duration, 0, 1) === 1) {
       this.stop(); // Stop the animation loop
       this.callback(); // Execute the callback
     }
@@ -439,12 +439,12 @@ R.Delay = class {
 };
 ///////////////////////////////
 // Calculates the distance between two points (t, e) using the Pythagorean theorem
-R.Dist = (x, y) => {
+RR.Dist = (x, y) => {
   return Math.sqrt(x * x + y * y);
 };
 
 ///////////////////////////////
-R.Ease = {
+RR.Ease = {
   // Linear easing
   linear: (t) => t,
 
@@ -481,13 +481,13 @@ R.Ease = {
 };
 
 ///////////////////////////////
-(R.r0 = (t, e) => 1 - 3 * e + 3 * t),
-  (R.r1 = (t, e) => 3 * e - 6 * t),
-  (R.r2 = (t, e, i) => ((R.r0(e, i) * t + R.r1(e, i)) * t + 3 * e) * t),
-  (R.r3 = (t, e, i) => 3 * R.r0(e, i) * t * t + 2 * R.r1(e, i) * t + 3 * e),
+(RR.r0 = (t, e) => 1 - 3 * e + 3 * t),
+  (RR.r1 = (t, e) => 3 * e - 6 * t),
+  (RR.r2 = (t, e, i) => ((RR.r0(e, i) * t + RR.r1(e, i)) * t + 3 * e) * t),
+  (RR.r3 = (t, e, i) => 3 * RR.r0(e, i) * t * t + 2 * RR.r1(e, i) * t + 3 * e),
   ///////////////////////////////
   //findBezierRoot
-  (R.r4 = (
+  (RR.r4 = (
     targetValue,
     lowerBound,
     upperBound,
@@ -505,7 +505,7 @@ R.Ease = {
 
       // Evaluate the curve at the midpoint
       error =
-        R.evaluateBezier(midpoint, controlPoint1, controlPoint2) - targetValue;
+        RR.evaluateBezier(midpoint, controlPoint1, controlPoint2) - targetValue;
 
       // Adjust bounds based on the error
       if (error > 0) {
@@ -526,11 +526,11 @@ R.Ease = {
   });
 ///////////////////////////////
 //solveBezierRoot
-R.r5 = (targetValue, initialGuess, controlPoint1, controlPoint2) => {
+RR.r5 = (targetValue, initialGuess, controlPoint1, controlPoint2) => {
   // Iterate up to 4 times to refine the root of the Bezier curve
   for (let iteration = 0; iteration < 4; ++iteration) {
     // Calculate the derivative of the Bezier curve at the current guess
-    const derivative = R.evaluateBezierDerivative(
+    const derivative = RR.evaluateBezierDerivative(
       initialGuess,
       controlPoint1,
       controlPoint2
@@ -543,7 +543,7 @@ R.r5 = (targetValue, initialGuess, controlPoint1, controlPoint2) => {
 
     // Refine the initial guess based on the error and derivative
     const error =
-      R.evaluateBezier(initialGuess, controlPoint1, controlPoint2) -
+      RR.evaluateBezier(initialGuess, controlPoint1, controlPoint2) -
       targetValue;
     initialGuess -= error / derivative;
   }
@@ -553,7 +553,7 @@ R.r5 = (targetValue, initialGuess, controlPoint1, controlPoint2) => {
 };
 ///////////////////////////////
 //createEaseFunction
-R.Ease4 = (controlPoints) => {
+RR.Ease4 = (controlPoints) => {
   const [controlPoint1, controlPoint2, controlPoint3, controlPoint4] =
     controlPoints;
   const lookupTable = new Float32Array(11);
@@ -561,7 +561,7 @@ R.Ease4 = (controlPoints) => {
   // If control points differ, populate the lookup table
   if (controlPoint1 !== controlPoint2 || controlPoint3 !== controlPoint4) {
     for (let i = 0; i < 11; ++i) {
-      lookupTable[i] = R.evaluateBezier(0.1 * i, controlPoint1, controlPoint3);
+      lookupTable[i] = RR.evaluateBezier(0.1 * i, controlPoint1, controlPoint3);
     }
   }
 
@@ -588,18 +588,18 @@ R.Ease4 = (controlPoints) => {
         (lookupTable[baseIndex + 1] - lookupTable[baseIndex]);
       const adjustedT = baseIndex + 0.1 * relativeT;
 
-      const derivative = R.evaluateBezierDerivative(
+      const derivative = RR.evaluateBezierDerivative(
         adjustedT,
         controlPoint1,
         controlPoint3
       );
       if (Math.abs(derivative) >= 0.001) {
-        return R.solveBezierRoot(t, adjustedT, controlPoint1, controlPoint3);
+        return RR.solveBezierRoot(t, adjustedT, controlPoint1, controlPoint3);
       }
 
       return derivative === 0
         ? adjustedT
-        : R.findRoot(
+        : RR.findRoot(
             t,
             derivative,
             adjustedT,
@@ -613,7 +613,7 @@ R.Ease4 = (controlPoints) => {
   };
 };
 ///////////////////////////////
-R.Fetch = (requestConfig) => {
+RR.Fetch = (requestConfig) => {
   const isJson = requestConfig.type === "json";
   const responseType = isJson ? "json" : "text";
 
@@ -656,11 +656,11 @@ R.Fetch = (requestConfig) => {
 
 ///////////////////////////////
 //hasOwnProperty
-R.has = (object, property) => object.hasOwnProperty(property);
+RR.has = (object, property) => object.hasOwnProperty(property);
 
 ///////////////////////////////
 //isType
-R.Is = {
+RR.Is = {
   isString: (value) => typeof value === "string",
   isObject: (value) => value === Object(value),
   isArray: (value) => Array.isArray(value),
@@ -670,35 +670,35 @@ R.Is = {
 
 ///////////////////////////////
 // Modulo function ensuring positive results
-R.Mod = (value, divisor) => ((value % divisor) + divisor) % divisor;
+RR.Mod = (value, divisor) => ((value % divisor) + divisor) % divisor;
 
 // Pad number with leading zeros
-R.Pad = (value, length) => ("000" + value).slice(-length);
+RR.Pad = (value, length) => ("000" + value).slice(-length);
 
 // Parametric curve calculation
-R.PCurve = (t, e, i) => {
+RR.PCurve = (t, e, i) => {
   return ((e + i) ** (e + i) / (e ** e * i ** i)) * t ** e * (1 - t) ** i;
 };
 
 // Rounded value with precision
-R.R = (value, precision) => {
-  precision = R.Is.isUndefined(precision) ? 100 : 10 ** precision;
+RR.R = (value, precision) => {
+  precision = RR.Is.isUndefined(precision) ? 100 : 10 ** precision;
   return Math.round(value * precision) / precision;
 };
 
 ///////////////////////////////
-R.Select = {
+RR.Select = {
   // Select elements based on selector type (ID or class)
   getElement: (selector) => {
     let elements = [];
     let identifier;
 
-    if (R.Is.isString(selector)) {
+    if (RR.Is.isString(selector)) {
       identifier = selector.substring(1);
       if (selector.charAt(0) === "#") {
-        elements[0] = R.G.id(identifier); // Select by ID
+        elements[0] = RR.G.id(identifier); // Select by ID
       } else {
-        elements = R.G.class(identifier); // Select by class
+        elements = RR.G.class(identifier); // Select by class
       }
     } else {
       elements[0] = selector; // Directly use the provided element
@@ -718,8 +718,8 @@ R.Select = {
 
 ///////////////////////////////
 // addEventListenerToElements
-R.L = (selector, eventType, eventAction, eventListener) => {
-  const elements = R.Select.getElement(selector);
+RR.L = (selector, eventType, eventAction, eventListener) => {
+  const elements = RR.Select.getElement(selector);
   const numElements = elements.length;
   let options = false;
 
@@ -743,10 +743,10 @@ let Tab = class {
   constructor() {
     this.tabs = []; // Array to hold the tabs
     this.lastPauseTime = 0; // Track the last time the tab was paused
-    R.BM(this, ["handleVisibilityChange"]);
+    RR.BM(this, ["handleVisibilityChange"]);
 
     // Attach the visibility change event listener to the document
-    R.L(document, "a", "visibilitychange", this.handleVisibilityChange);
+    RR.L(document, "a", "visibilitychange", this.handleVisibilityChange);
   }
 
   // Method to add a new tab
@@ -781,13 +781,13 @@ let Tab = class {
 
 ///////////////////////////////
 // Instantiate a new Tab object and assign it to `RD`
-let RD = (R.Tab = new Tab());
+let RD = (RR.Tab = new Tab());
 // Constant for the frame rate (60 FPS)
 let FR = 1000 / 60;
 
 ///////////////////////////////
 let Raf =
-  ((R.Raf = class {
+  ((RR.Raf = class {
     constructor() {
       this.callbacks = [];
       this.isRunning = true;
@@ -797,7 +797,7 @@ let Raf =
       this.bindMethods(["loop", "pause", "resume"]);
 
       // Add the start/stop actions to the Tab
-      R.Tab.addTab({
+      RR.Tab.addTab({
         stop: this.pause,
         start: this.resume,
       });
@@ -853,7 +853,7 @@ let Raf =
         for (let i = 0; i < duration; i++) {
           let callbackData = this.callbacks[i];
 
-          if (R.Is.def(callbackData)) {
+          if (RR.Is.def(callbackData)) {
             if (!callbackData.startTime) callbackData.startTime = currentTime;
 
             // Calculate the time delta for the callback
@@ -886,12 +886,12 @@ let Raf =
       });
     }
   }),
-  new R.Raf());
+  new RR.Raf());
 let RafId = 0;
 
 ///////////////////////////////
 let Ro =
-    ((R.RafR = class {
+    ((RR.RafR = class {
       constructor(t) {
         (this.cb = t), (this.on = !1), (this.id = RafId), RafId++;
       }
@@ -907,8 +907,8 @@ let Ro =
         this.on && (Raf.remove(this.id), (this.on = !1));
       }
     }),
-    (R.Rand = {
-      range: (t, e, i) => R.R(Math.random() * (e - t) + t, i),
+    (RR.Rand = {
+      range: (t, e, i) => RR.R(Math.random() * (e - t) + t, i),
       uniq: (e) => {
         var i = [];
         for (let t = 0; t < e; t++) i[t] = t;
@@ -921,7 +921,7 @@ let Ro =
         return i;
       },
     }),
-    (R.Snif = {
+    (RR.Snif = {
       uA: navigator.userAgent.toLowerCase(),
       get iPadIOS13() {
         return (
@@ -937,16 +937,16 @@ let Ro =
         return -1 < this.uA.indexOf("firefox");
       },
     }),
-    (R.Svg = {
+    (RR.Svg = {
       shapeL: (s) => {
         var t, e, i, r;
-        if ("circle" === s.tagName) return 2 * R.Ga(s, "r") * Math.PI;
+        if ("circle" === s.tagName) return 2 * RR.Ga(s, "r") * Math.PI;
         if ("line" === s.tagName)
           return (
-            (t = R.Ga(s, "x1")),
-            (e = R.Ga(s, "x2")),
-            (i = R.Ga(s, "y1")),
-            (r = R.Ga(s, "y2")),
+            (t = RR.Ga(s, "x1")),
+            (e = RR.Ga(s, "x2")),
+            (i = RR.Ga(s, "y1")),
+            (r = RR.Ga(s, "y2")),
             Math.sqrt((e -= t) * e + (r -= i) * r)
           );
         if ("polyline" !== s.tagName) return s.getTotalLength();
@@ -956,7 +956,7 @@ let Ro =
           var a = s.points.numberOfItems;
           for (let t = 0; t < a; t++) {
             var h = s.points.getItem(t);
-            0 < t && (e += R.Dist(h.x - i.x, h.y - i.y)), (i = h);
+            0 < t && (e += RR.Dist(h.x - i.x, h.y - i.y)), (i = h);
           }
           return e;
         }
@@ -977,47 +977,47 @@ let Ro =
         return e;
       },
     }),
-    (R.Timer = class {
+    (RR.Timer = class {
       constructor(t) {
-        this._ = new R.Delay(t.cb, t.delay);
+        this._ = new RR.Delay(t.cb, t.delay);
       }
       run() {
         this._.stop(), this._.run();
       }
     }),
-    (R.Une = (t, e, i) => 0 !== R.R(Math.abs(t - e), i)),
-    (R.Cr = (t) => document.createElement(t)),
-    (R.g = (t, e, i) => (t || document)["getElement" + e](i)),
-    (R.G = {
-      id: (t, e) => R.g(e, "ById", t),
-      class: (t, e) => R.g(e, "sByClassName", t),
-      tag: (t, e) => R.g(e, "sByTagName", t),
+    (RR.Une = (t, e, i) => 0 !== RR.R(Math.abs(t - e), i)),
+    (RR.Cr = (t) => document.createElement(t)),
+    (RR.g = (t, e, i) => (t || document)["getElement" + e](i)),
+    (RR.G = {
+      id: (t, e) => RR.g(e, "ById", t),
+      class: (t, e) => RR.g(e, "sByClassName", t),
+      tag: (t, e) => RR.g(e, "sByTagName", t),
     }),
-    (R.Ga = (t, e) => t.getAttribute(e)),
-    (R.index = (e, i) => {
+    (RR.Ga = (t, e) => t.getAttribute(e)),
+    (RR.index = (e, i) => {
       var s = i.length;
       for (let t = 0; t < s; t++) if (e === i[t]) return t;
       return -1;
     }),
-    (R.Index = {
-      list: (t) => R.index(t, t.parentNode.children),
-      class: (t, e, i) => R.index(t, R.G.class(e, i)),
+    (RR.Index = {
+      list: (t) => RR.index(t, t.parentNode.children),
+      class: (t, e, i) => RR.index(t, RR.G.class(e, i)),
     }),
-    (R.PD = (t) => {
+    (RR.PD = (t) => {
       t.cancelable && t.preventDefault();
     }),
-    (R.RO = class {
+    (RR.RO = class {
       constructor() {
-        (this.eT = R.Snif.isMobile ? "orientationchange" : "resize"),
+        (this.eT = RR.Snif.isMobile ? "orientationchange" : "resize"),
           (this.tick = !1),
           (this._ = []),
-          R.BM(this, ["fn", "gRaf", "run"]),
-          (this.t = new R.Timer({
+          RR.BM(this, ["fn", "gRaf", "run"]),
+          (this.t = new RR.Timer({
             delay: 40,
             cb: this.gRaf,
           })),
-          (this.r = new R.RafR(this.run)),
-          R.L(window, "a", this.eT, this.fn);
+          (this.r = new RR.RafR(this.run)),
+          RR.L(window, "a", this.eT, this.fn);
       }
       add(t) {
         this._.push(t);
@@ -1038,7 +1038,7 @@ let Ro =
         this.r.stop(), (this.tick = !1);
       }
     }),
-    new R.RO()),
+    new RR.RO()),
   RoId = 0;
 ///////////////////////////////
 function Router(newUrl) {
@@ -1068,7 +1068,7 @@ function Router(newUrl) {
 }
 
 ///////////////////////////////
-R.ROR = class {
+RR.ROR = class {
   constructor(callback) {
     this.callback = callback; // Store the callback function
     this.id = RoId; // Assign a unique ID to this instance
@@ -1094,24 +1094,24 @@ R.ROR = class {
 };
 
 ///////////////////////////////
-(R.O = (t, e) => {
+(RR.O = (t, e) => {
   t.style.opacity = e;
 }),
-  (R.pe = (t, e) => {
+  (RR.pe = (t, e) => {
     t.style.pointerEvents = e;
   });
 ///////////////////////////////
-R.PE = {
+RR.PE = {
   all: (element) => {
-    R.pe(element, "all");
+    RR.pe(element, "all");
   },
   none: (element) => {
-    R.pe(element, "none");
+    RR.pe(element, "none");
   },
 };
 ///////////////////////////////
-R.T = (t, e, i, s) => {
-  s = R.Is.und(s) ? "%" : s;
+RR.T = (t, e, i, s) => {
+  s = RR.Is.und(s) ? "%" : s;
   t.style.transform = "translate3d(" + e + s + "," + i + s + ",0)"
 }
 

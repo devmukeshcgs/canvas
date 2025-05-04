@@ -184,6 +184,7 @@ class Scroll {
     }
 
     loop() {
+        logic("Scroll loop");
         const appState = _A;
         const lerpProgress = appState.lerpP;
 
