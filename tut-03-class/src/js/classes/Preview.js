@@ -1,59 +1,29 @@
-class Preview {
+export default class Preview {
   init() {
-    this.url = _A.route.new.url;
-    this.leftWrapper = R.G.id("a-l-w");
-    this.leftContent = R.G.id("a-l");
-    this.previewElement = R.G.id("a-lp");
-    this.resize();
+      this.url = _A.route.new.url,
+      this.leftW = R.G.id("a-l-w"),
+      this.left = R.G.id("a-l"),
+      this.preview = R.G.id("a-lp"),
+      this.resize()
   }
-
   resize() {
-    const state = _A;
-    const windowHeight = state.win.h;
-
-    // Reset positions before calculating new dimensions
-    R.T(this.leftWrapper, 0, 0, "px");
-    R.T(this.previewElement, 0, 0, "px");
-
-    const leftContentHeight = this.leftContent.offsetHeight;
-    const leftContentTop = this.leftContent.getBoundingClientRect().top;
-
-    // Calculate visible area of left content
-    this.leftVisibleArea =
-      windowHeight < leftContentTop + leftContentHeight
-        ? windowHeight - leftContentTop // If content extends beyond viewport
-        : leftContentHeight; // If all content fits in viewport
-
-    // Calculate maximum scroll values
-    this.maxScrollContent = leftContentHeight - this.leftVisibleArea;
-    this.maxScrollPreview =
-      this.leftVisibleArea - this.previewElement.offsetHeight;
+      var t = _A
+        , e = t.win.h
+        , i = (R.T(this.leftW, 0, 0, "px"),
+      R.T(this.preview, 0, 0, "px"),
+      this.left.offsetHeight)
+        , s = this.left.getBoundingClientRect().top;
+      this.leftArea = e < s + i ? t.win.h - s : s + i - s,
+      this.max = i - this.leftArea,
+      this.maxP = this.leftArea - this.preview.offsetHeight
   }
-
   loop() {
-    const state = _A;
-    const currentScroll = state.e.s._[this.url].curr;
-    const maxScroll = state.e.s.max;
-
-    // Calculate scroll positions
-    const contentScrollPos = R.Remap(
-      0,
-      maxScroll,
-      0,
-      this.maxScrollContent,
-      currentScroll
-    );
-    const previewScrollPos = R.Remap(
-      0,
-      maxScroll,
-      0,
-      this.maxScrollPreview,
-      currentScroll
-    );
-
-    // Apply transformations
-    R.T(this.leftWrapper, 0, -R.R(contentScrollPos), "px");
-    R.T(this.previewElement, 0, R.R(previewScrollPos), "px");
+      var t = _A
+        , e = t.e.s._[this.url].curr
+        , t = t.e.s.max
+        , i = R.Remap(0, t, 0, this.max, e)
+        , t = R.Remap(0, t, 0, this.maxP, e);
+      R.T(this.leftW, 0, -R.R(i), "px"),
+      R.T(this.preview, 0, R.R(t), "px")
   }
 }
-export default Preview;

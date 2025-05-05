@@ -1,167 +1,174 @@
-function Plane(config) {
-  const { p: planeConfig } = config;
-  const { h: horizontalPoints, v: verticalPoints } = planeConfig.pts;
+import Geo from "./Geo" 
 
-  const horizontalStep = 1 / (horizontalPoints - 1);
-  const verticalStep = 1 / (verticalPoints - 1);
-
-  const positions = [];
-  let posIndex = 0;
-
-  for (let v = 0; v < verticalPoints; v++) {
-    const y = v * verticalStep - 1;
-    for (let h = 0; h < horizontalPoints; h++) {
-      positions[posIndex++] = h * horizontalStep; // X
-      positions[posIndex++] = y; // Y
-    }
+function Plane(t) {
+  var t = t.p
+    , e = {};
+  const i = t.pts.h
+    , s = t.pts.v
+    , r = i - 1
+    , a = s - 1
+    , h = 1 / r
+    , l = 1 / a;
+  var o = [];
+  let n = 0;
+  for (let t = 0; t < s; t++) {
+      var p = t * l - 1;
+      for (let t = 0; t < i; t++)
+          o[n++] = t * h,
+          o[n++] = p
   }
-
-  const indices = [];
-  let indexCounter = 0;
-  for (let v = 0; v < verticalPoints - 1; v++) {
-    const currentRowStart = v * horizontalPoints;
-    const nextRowStart = (v + 1) * horizontalPoints;
-
-    for (let h = 0; h < horizontalPoints; h++) {
-      const current = currentRowStart + h;
-      const next = nextRowStart + h;
-
-      indices[indexCounter++] = current;
-      indices[indexCounter++] = next;
-
-      if (h === horizontalPoints - 1 && v < verticalPoints - 2) {
-        indices[indexCounter++] = next;
-        indices[indexCounter++] = nextRowStart + horizontalPoints;
+  e.pos = o;
+  var d = [];
+  let c = 0;
+  var g = s - 1
+    , u = s - 2
+    , m = i - 1;
+  for (let e = 0; e < g; e++) {
+      var v = i * e
+        , f = v + i;
+      for (let t = 0; t < i; t++) {
+          var R = f + t;
+          d[c++] = v + t,
+          d[c++] = R,
+          t === m && e < u && (d[c++] = R,
+          d[c++] = i * (e + 1))
       }
-    }
   }
-
-  const textureCoords = [];
-  let texIndex = 0;
-
-  for (let v = 0; v < verticalPoints; v++) {
-    const tY = 1 - v / (verticalPoints - 1);
-    for (let h = 0; h < horizontalPoints; h++) {
-      textureCoords[texIndex++] = h / (horizontalPoints - 1); // U
-      textureCoords[texIndex++] = tY; // V
-    }
+  e.index = d;
+  var x = [];
+  let w = 0;
+  for (let t = 0; t < s; t++) {
+      var y = 1 - t / a;
+      for (let t = 0; t < i; t++)
+          x[w++] = t / r,
+          x[w++] = y
   }
-
-  return {
-    pos: positions,
-    index: indices,
-    texture: textureCoords,
-  };
+  return e.texture = x,
+  e
 }
-
 class PlaneTex {
-  constructor(config) {
-    const { p: programConfig } = config;
-    const textureArray = _A.rgl.renderer.texture.tex[config.url];
-    const planeCount = textureArray.length;
-
-    const isHomeLarge = R.Is.def(config.isHomeLarge);
-    this.planeCount = isHomeLarge ? planeCount ** 2 : planeCount;
-
-    const defaultLerp = {
-      x: 0,
-      y: 0,
-      w: 0,
-      h: 0,
-      opacity: 1,
-      scale: 1,
-      pY: 0,
-      pX: 0,
-    };
-
-    const defaultEase = { y: 0, pY: 0, scale: 0 };
-    const defaultIntro = { x: 0, y: 0, w: 0, h: 0, scale: 0 };
-
-    R.BM(this, ["unequal"]);
-
-    this.planes = Array.from({ length: this.planeCount }, (_, index) => {
-      const texture = textureArray[index % planeCount];
-      const { element, attrib } = texture;
-
-      const geometryConfig = {
-        pts: { h: 2, v: 2 },
-        tex: texture,
-        media: {
-          obj: element,
-          dimension: { width: element.width, height: element.height },
-          ratio: {
-            wh: element.width / element.height,
-            hw: element.height / element.width,
-          },
-        },
-        geo: new Geo({
-          program: programConfig,
-          mode: "TRIANGLE_STRIP",
-          face: "FRONT",
-          attrib: {
-            c: { size: 2 },
-            index: { size: 1 },
-            f: { size: 2, tex: attrib },
-          },
-        }),
-        zIndex: 0,
-        lerp: { ...defaultLerp },
-        ease: { ...defaultEase },
-        intro: { ...defaultIntro },
-        out: false,
+  constructor(t) {
+      var e = t.p
+        , i = _A.rgl.renderer.texture.tex[t.url]
+        , s = i.length
+        , r = (this.planeL = s,
+      R.Is.def(t.isHomeLarge) && (this.planeL = this.planeL * this.planeL),
+      {
+          h: 2,
+          v: 2
+      })
+        , a = (this.lerp = {
+          prop: ["x", "y", "w", "h", "scale", "opacity", "pY"],
+          r6: ["scale", "opacity", "pY"]
+      },
+      this.lerp.propL = this.lerp.prop.length,
+      {
+          x: 0,
+          y: 0,
+          w: 0,
+          h: 0,
+          opacity: 1,
+          scale: 1,
+          pY: 0,
+          pX: 0
+      })
+        , h = {
+          y: 0,
+          pY: 0,
+          scale: 0
+      }
+        , l = {
+          x: 0,
+          y: 0,
+          w: 0,
+          h: 0,
+          scale: 0
       };
-
-      const planeData = Plane({ p: geometryConfig, tex: true });
-      const attributes = geometryConfig.geo.attrib;
-
-      attributes.c.data = new Float32Array(planeData.pos);
-      attributes.index.data = new Uint16Array(planeData.index);
-      attributes.f.data = new Float32Array(planeData.texture);
-
-      geometryConfig.geo.setVAO();
-
-      return geometryConfig;
-    });
-  }
-
-  draw(isMutating) {
-    const { win } = _A;
-    const { w: windowWidth, h: windowHeight } = win;
-
-    for (let zIndex = 0; zIndex < 2; zIndex++) {
-      this.planes.forEach((plane) => {
-        if (plane.zIndex === zIndex) {
-          const { lerp, ease, intro } = plane;
-          const x = lerp.x + intro.x;
-          const y = lerp.y + ease.y + intro.y;
-          const width = lerp.w + intro.w;
-          const height = lerp.h + intro.h;
-
-          if (
-            x < windowWidth &&
-            x + width > 0 &&
-            y < windowHeight &&
-            y + height > 0 &&
-            lerp.opacity > 0 &&
-            height > 0 &&
-            width > 0
-          ) {
-            if (!isMutating && plane.out) plane.out = false;
-            plane.geo.draw(plane);
-          } else if (!plane.out) {
-            plane.out = true;
-            plane.geo.draw(plane);
+      R.BM(this, ["unequal"]),
+      this.plane = [];
+      for (let t = 0; t < this.planeL; t++) {
+          var o = i[t % s]
+            , n = o.element
+            , p = n.width
+            , d = n.height
+            , n = {
+              pts: r,
+              zIndex: 0,
+              lerp: {
+                  ...a
+              },
+              ease: {
+                  ...h
+              },
+              intro: {
+                  ...l
+              },
+              tex: o,
+              media: {
+                  obj: n,
+                  dimension: {
+                      width: p,
+                      height: d
+                  },
+                  ratio: {
+                      wh: p / d,
+                      hw: d / p
+                  }
+              },
+              out: !1,
+              geo: new Geo({
+                  program: e,
+                  mode: "TRIANGLE_STRIP",
+                  face: "FRONT",
+                  attrib: {
+                      c: {
+                          size: 2
+                      },
+                      index: {
+                          size: 1
+                      },
+                      f: {
+                          size: 2,
+                          tex: o.attrib
+                      }
+                  }
+              })
           }
-        }
-      });
-    }
+            , d = Plane({
+              p: n,
+              tex: !0
+          })
+            , p = n.geo.attrib;
+          p.c.data = new Float32Array(d.pos),
+          p.index.data = new Uint16Array(d.index),
+          p.f.data = new Float32Array(d.texture),
+          n.geo.setVAO(),
+          this.plane[t] = n
+      }
   }
-
-  unequal(props) {
-    const { prop, a, b } = props;
-    const precision = this.lerp.r6.includes(prop) ? 6 : 2;
-    return R.R(Math.abs(a[prop] - b[prop]), precision) !== 0;
+  draw(i) {
+      var s = _A
+        , r = s.win.w
+        , a = s.win.h;
+      for (let e = 0; e < 2; e++)
+          for (let t = 0; t < this.planeL; t++) {
+              var h, l, o, n, p, d = this.plane[t];
+              d.zIndex === e && (h = d.lerp,
+              o = d.ease,
+              p = d.intro,
+              l = h.x + p.x,
+              o = h.y + o.y + p.y,
+              n = h.w + p.w,
+              p = h.h + p.h,
+              l < r && 0 < l + n && o < a && 0 < o + p && (0 < h.opacity && 0 < p && 0 < n) && (i || s.mutating) ? (d.out && (d.out = !1),
+              d.geo.draw(d)) : d.out || (d.out = !0,
+              d.geo.draw(d)))
+          }
+  }
+  unequal(t) {
+      var e = t.prop
+        , i = this.lerp.r6.includes(e) ? 6 : 2;
+      return 0 !== R.R(Math.abs(t.a[e] - t.b[e]), i)
   }
 }
-
 export default PlaneTex;

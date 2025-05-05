@@ -1,254 +1,301 @@
-class SFx {
-    constructor() {
-        this.init();
-    }
-
+import SLine from './SLine'
+export default class SFx {
     init() {
-        this.url = _A.route.new.url;
-        this.triggerElements = [];
-        this.timelines = [];
-        this.isVisible = [];
-        this.visibilityThresholds = [];
-        this.isFirstRun = true;
-        
-        // Initialize hero section elements
-        this.heroElements = R.G.id("a-r-hero").children;
-        this.heroElementCount = this.heroElements.length;
-        this.heroTextLines = [];
-        
-        for (let i = 0; i < this.heroElementCount; i++) {
-            this.heroTextLines[i] = new SLine({
-                el: this.heroElements[i]
+        this.url = _A.route.new.url,
+        this.trigger = [],
+        this.tl = [],
+        this.isVisible = [],
+        this.limit = [],
+        this.first = !0,
+        this.heroP = R.G.id("a-r-hero").children,
+        this.heroPL = this.heroP.length,
+        this.slineHeroP = [];
+        for (let t = 0; t < this.heroPL; t++)
+            this.slineHeroP[t] = new SLine({
+                el: this.heroP[t]
             });
-        }
-
-        // Initialize all section elements
-        this.initializeSectionElements();
-        this.resize();
+        var t = R.G.id("a-r-experience")
+          , t = (this.expH2 = R.G.tag("h2", t)[0].children[0],
+        this.expLi = R.G.tag("ul", t)[0].children,
+        this.expLiL = this.expLi.length,
+        R.G.id("a-r-recognition"))
+          , t = (this.recoH2 = R.G.tag("h2", t)[0].children[0],
+        this.recoLi = R.G.tag("ul", t)[0].children,
+        this.recoLiL = this.recoLi.length,
+        R.G.id("a-r-clients"))
+          , t = (this.clientsH2 = R.G.tag("h2", t)[0].children[0],
+        this.clientsLi = R.G.tag("ul", t)[0].children,
+        this.clientsLiL = this.clientsLi.length,
+        R.G.id("a-r-contact"))
+          , t = (this.contactH2 = R.G.tag("h2", t)[0].children[0],
+        this.contactLi = R.G.tag("ul", t)[0].children,
+        this.contactLiL = this.contactLi.length,
+        R.G.id("a-r-credits"));
+        this.creditsH2 = R.G.tag("h2", t)[0].children[0],
+        this.creditsLi = R.G.tag("ul", t)[0].children,
+        this.creditsLiL = this.creditsLi.length,
+        this.resize()
     }
-
-    initializeSectionElements() {
-        // Experience section
-        const experienceSection = R.G.id("a-r-experience");
-        this.expHeading = R.G.tag("h2", experienceSection)[0].children[0];
-        this.expItems = R.G.tag("ul", experienceSection)[0].children;
-        this.expItemCount = this.expItems.length;
-
-        // Recognition section
-        const recognitionSection = R.G.id("a-r-recognition");
-        this.recoHeading = R.G.tag("h2", recognitionSection)[0].children[0];
-        this.recoItems = R.G.tag("ul", recognitionSection)[0].children;
-        this.recoItemCount = this.recoItems.length;
-
-        // Clients section
-        const clientsSection = R.G.id("a-r-clients");
-        this.clientsHeading = R.G.tag("h2", clientsSection)[0].children[0];
-        this.clientsItems = R.G.tag("ul", clientsSection)[0].children;
-        this.clientsItemCount = this.clientsItems.length;
-
-        // Contact section
-        const contactSection = R.G.id("a-r-contact");
-        this.contactHeading = R.G.tag("h2", contactSection)[0].children[0];
-        this.contactItems = R.G.tag("ul", contactSection)[0].children;
-        this.contactItemCount = this.contactItems.length;
-
-        // Credits section
-        const creditsSection = R.G.id("a-r-credits");
-        this.creditsHeading = R.G.tag("h2", creditsSection)[0].children[0];
-        this.creditsItems = R.G.tag("ul", creditsSection)[0].children;
-        this.creditsItemCount = this.creditsItems.length;
-    }
-
     resize() {
-        let elementIndex = 0;
-        const defaultDuration = 1500;
-        const easing = "o6";
-        
-        // Setup hero elements animations
-        this.setupHeroAnimations(elementIndex, defaultDuration, easing);
-        elementIndex += this.heroElementCount;
-        
-        // Setup section animations
-        elementIndex = this.setupSectionAnimations(
-            this.expHeading, 
-            this.expItems, 
-            this.expItemCount, 
-            elementIndex, 
-            defaultDuration, 
-            easing
-        );
-        
-        elementIndex = this.setupSectionAnimations(
-            this.recoHeading, 
-            this.recoItems, 
-            this.recoItemCount, 
-            elementIndex, 
-            defaultDuration, 
-            easing
-        );
-        
-        elementIndex = this.setupSectionAnimations(
-            this.clientsHeading, 
-            this.clientsItems, 
-            this.clientsItemCount, 
-            elementIndex, 
-            defaultDuration, 
-            easing
-        );
-        
-        elementIndex = this.setupSectionAnimations(
-            this.contactHeading, 
-            this.contactItems, 
-            this.contactItemCount, 
-            elementIndex, 
-            defaultDuration, 
-            easing
-        );
-        
-        elementIndex = this.setupSectionAnimations(
-            this.creditsHeading, 
-            this.creditsItems, 
-            this.creditsItemCount, 
-            elementIndex, 
-            defaultDuration, 
-            easing
-        );
-
-        // Initialize visibility tracking
-        this.triggerCount = this.triggerElements.length;
-        if (this.isFirstRun) {
-            for (let i = 0; i < this.triggerCount; i++) {
-                this.isVisible[i] = false;
-            }
-            this.isFirstRun = false;
-        }
-    }
-
-    setupHeroAnimations(elementIndex, duration, easing) {
-        for (let i = 0; i < this.heroElementCount; i++) {
-            this.triggerElements[elementIndex] = this.heroElements[i];
-            
-            const { delay, fromBack } = this.calculateThreshold(elementIndex);
-            const animationDuration = fromBack ? 0 : duration;
-            const subsequentDelay = fromBack ? 0 : 100;
-            const yOffset = this.isVisible[elementIndex] ? 0 : 110;
-            
-            // Setup text line effects
-            this.heroTextLines[i].resize({
+        let e = 0;
+        var i = 1500
+          , s = "o6";
+        for (let t = 0; t < this.heroPL; t++) {
+            this.trigger[e] = this.heroP[t];
+            var r = this.limitSet(e)
+              , a = r.delay
+              , h = r.fromBack ? 0 : i
+              , l = r.fromBack ? 0 : 100
+              , r = this.isVisible[e] ? 0 : 110
+              , o = (this.slineHeroP[t].resize({
                 tag: {
-                    start: `<span class="sfx-y"><span style="transform: translate3d(0,${yOffset}%,0);">`,
+                    start: '<span class="sfx-y"><span style="transform: translate3d(0,' + r + '%,0);">',
                     end: "</span></span>"
                 }
-            });
-            
-            const animatedElements = R.G.class("sfx-y", this.heroTextLines[i].el);
-            const elementCount = animatedElements.length;
-            
-            if (!this.isVisible[elementIndex]) {
-                this.timelines[elementIndex] = new R.TL();
-                
-                for (let j = 0; j < elementCount; j++) {
-                    const currentDelay = j === 0 ? delay : subsequentDelay;
-                    
-                    this.timelines[elementIndex].from({
-                        el: animatedElements[j].children[0],
+            }),
+            R.G.class("sfx-y", this.slineHeroP[t].el))
+              , n = o.length;
+            if (!this.isVisible[e]) {
+                this.tl[e] = new R.TL;
+                for (let t = 0; t < n; t++) {
+                    var p = 0 === t ? a : l;
+                    this.tl[e].from({
+                        el: o[t].children[0],
                         p: {
                             y: [110, 0]
                         },
-                        d: animationDuration,
-                        e: easing,
-                        delay: currentDelay
-                    });
+                        d: h,
+                        e: s,
+                        delay: p
+                    })
                 }
             }
-            elementIndex++;
+            e++
         }
-        return elementIndex;
-    }
-
-    setupSectionAnimations(heading, items, itemCount, elementIndex, duration, easing) {
-        // Setup heading animation
-        this.triggerElements[elementIndex] = heading;
-        let { delay, fromBack } = this.calculateThreshold(elementIndex);
-        const headingDuration = fromBack ? 0 : duration;
-        
-        if (!this.isVisible[elementIndex]) {
-            this.timelines[elementIndex] = new R.TL();
-            this.timelines[elementIndex].from({
-                el: heading,
-                p: {
-                    y: [110, 0]
-                },
-                d: headingDuration,
-                e: easing,
-                delay: delay
-            });
-        }
-        elementIndex++;
-        
-        // Setup items animations
-        for (let i = 0; i < itemCount; i++) {
-            this.triggerElements[elementIndex] = items[i];
-            const { delay, fromBack } = this.calculateThreshold(elementIndex);
-            const itemDuration = fromBack ? 0 : duration;
-            const subsequentDelay = fromBack ? 0 : 100;
-            
-            const animatedElements = R.G.class("sfx-y", items[i]);
-            const elementCount = animatedElements.length;
-            
-            if (!this.isVisible[elementIndex]) {
-                this.timelines[elementIndex] = new R.TL();
-                
-                for (let j = 0; j < elementCount; j++) {
-                    const currentDelay = j === 0 ? delay : subsequentDelay;
-                    
-                    this.timelines[elementIndex].from({
-                        el: animatedElements[j].children[0],
+        this.trigger[e] = this.expH2;
+        var t = this.limitSet(e)
+          , d = t.delay
+          , t = t.fromBack ? 0 : i;
+        this.isVisible[e] || (this.tl[e] = new R.TL,
+        this.tl[e].from({
+            el: this.expH2,
+            p: {
+                y: [110, 0]
+            },
+            d: t,
+            e: s,
+            delay: d
+        })),
+        e++;
+        for (let t = 0; t < this.expLiL; t++) {
+            this.trigger[e] = this.expLi[t];
+            var c = this.limitSet(e)
+              , g = c.delay
+              , u = c.fromBack ? 0 : i
+              , m = c.fromBack ? 0 : 100
+              , v = R.G.class("sfx-y", this.expLi[t])
+              , f = v.length;
+            if (!this.isVisible[e]) {
+                this.tl[e] = new R.TL;
+                for (let t = 0; t < f; t++) {
+                    var x = 0 === t ? g : m;
+                    this.tl[e].from({
+                        el: v[t].children[0],
                         p: {
                             y: [110, 0]
                         },
-                        d: itemDuration,
-                        e: easing,
-                        delay: currentDelay
-                    });
+                        d: u,
+                        e: s,
+                        delay: x
+                    })
                 }
             }
-            elementIndex++;
+            e++
         }
-        
-        return elementIndex;
+        this.trigger[e] = this.recoH2;
+        t = this.limitSet(e),
+        d = t.delay,
+        t = t.fromBack ? 0 : i;
+        this.isVisible[e] || (this.tl[e] = new R.TL,
+        this.tl[e].from({
+            el: this.recoH2,
+            p: {
+                y: [110, 0]
+            },
+            d: t,
+            e: s,
+            delay: d
+        })),
+        e++;
+        for (let t = 0; t < this.recoLiL; t++) {
+            this.trigger[e] = this.recoLi[t];
+            var w = this.limitSet(e)
+              , y = w.delay
+              , L = w.fromBack ? 0 : i
+              , _ = w.fromBack ? 0 : 100
+              , A = R.G.class("sfx-y", this.recoLi[t])
+              , b = A.length;
+            if (!this.isVisible[e]) {
+                this.tl[e] = new R.TL;
+                for (let t = 0; t < b; t++) {
+                    var S = 0 === t ? y : _;
+                    this.tl[e].from({
+                        el: A[t].children[0],
+                        p: {
+                            y: [110, 0]
+                        },
+                        d: L,
+                        e: s,
+                        delay: S
+                    })
+                }
+            }
+            e++
+        }
+        this.trigger[e] = this.clientsH2;
+        t = this.limitSet(e),
+        d = t.delay,
+        t = t.fromBack ? 0 : i;
+        this.isVisible[e] || (this.tl[e] = new R.TL,
+        this.tl[e].from({
+            el: this.clientsH2,
+            p: {
+                y: [110, 0]
+            },
+            d: t,
+            e: s,
+            delay: d
+        })),
+        e++;
+        for (let t = 0; t < this.clientsLiL; t++) {
+            this.trigger[e] = this.clientsLi[t];
+            var M = this.limitSet(e)
+              , T = M.delay
+              , F = M.fromBack ? 0 : i
+              , H = M.fromBack ? 0 : 100
+              , P = R.G.class("sfx-y", this.clientsLi[t])
+              , G = P.length;
+            if (!this.isVisible[e]) {
+                this.tl[e] = new R.TL;
+                for (let t = 0; t < G; t++) {
+                    var I = 0 === t ? T : H;
+                    this.tl[e].from({
+                        el: P[t].children[0],
+                        p: {
+                            y: [110, 0]
+                        },
+                        d: F,
+                        e: s,
+                        delay: I
+                    })
+                }
+            }
+            e++
+        }
+        this.trigger[e] = this.contactH2;
+        t = this.limitSet(e),
+        d = t.delay,
+        t = t.fromBack ? 0 : i;
+        this.isVisible[e] || (this.tl[e] = new R.TL,
+        this.tl[e].from({
+            el: this.contactH2,
+            p: {
+                y: [110, 0]
+            },
+            d: t,
+            e: s,
+            delay: d
+        })),
+        e++;
+        for (let t = 0; t < this.contactLiL; t++) {
+            this.trigger[e] = this.contactLi[t];
+            var B = this.limitSet(e)
+              , C = B.delay
+              , O = B.fromBack ? 0 : i
+              , D = B.fromBack ? 0 : 100
+              , E = R.G.class("sfx-y", this.contactLi[t])
+              , W = E.length;
+            if (!this.isVisible[e]) {
+                this.tl[e] = new R.TL;
+                for (let t = 0; t < W; t++) {
+                    var N = 0 === t ? C : D;
+                    this.tl[e].from({
+                        el: E[t].children[0],
+                        p: {
+                            y: [110, 0]
+                        },
+                        d: O,
+                        e: s,
+                        delay: N
+                    })
+                }
+            }
+            e++
+        }
+        this.trigger[e] = this.creditsH2;
+        t = this.limitSet(e),
+        d = t.delay,
+        t = t.fromBack ? 0 : i;
+        this.isVisible[e] || (this.tl[e] = new R.TL,
+        this.tl[e].from({
+            el: this.creditsH2,
+            p: {
+                y: [110, 0]
+            },
+            d: t,
+            e: s,
+            delay: d
+        })),
+        e++;
+        for (let t = 0; t < this.creditsLiL; t++) {
+            this.trigger[e] = this.creditsLi[t];
+            var k = this.limitSet(e)
+              , q = k.delay
+              , V = k.fromBack ? 0 : i
+              , U = k.fromBack ? 0 : 100
+              , z = R.G.class("sfx-y", this.creditsLi[t])
+              , X = z.length;
+            if (!this.isVisible[e]) {
+                this.tl[e] = new R.TL;
+                for (let t = 0; t < X; t++) {
+                    var j = 0 === t ? q : U;
+                    this.tl[e].from({
+                        el: z[t].children[0],
+                        p: {
+                            y: [110, 0]
+                        },
+                        d: V,
+                        e: s,
+                        delay: j
+                    })
+                }
+            }
+            e++
+        }
+        if (this.triggerL = this.trigger.length,
+        this.first) {
+            for (let t = 0; t < this.triggerL; t++)
+                this.isVisible[t] = !1;
+            this.first = !1
+        }
     }
-
     loop() {
-        const scrollPosition = _A.e.s._[this.url].curr;
-        
-        for (let i = 0; i < this.triggerCount; i++) {
-            if (scrollPosition > this.visibilityThresholds[i] && !this.isVisible[i]) {
-                this.isVisible[i] = true;
-                this.timelines[i].play();
-            }
-        }
+        var e = _A.e.s._[this.url].curr;
+        for (let t = 0; t < this.triggerL; t++)
+            e > this.limit[t] && !this.isVisible[t] && (this.isVisible[t] = !0,
+            this.tl[t].play())
     }
-
-    calculateThreshold(index) {
-        const state = _A;
-        const isLocalIntro = state.config.isLocal && state.introducing;
-        const isFromBack = state.fromBack;
-        
-        const elementTop = this.triggerElements[index].getBoundingClientRect().top + 
-                          state.e.s._[this.url].curr;
-        const isAboveFold = elementTop < state.win.h;
-        
-        this.visibilityThresholds[index] = isAboveFold ? -1 : elementTop - state.sFxS;
-        
-        const delay = isAboveFold && !isFromBack && !isLocalIntro 
-            ? 700 + 200 * index 
-            : 0;
-            
+    limitSet(t) {
+        var e = _A
+          , i = e.config.isLocal && e.introducing
+          , s = e.fromBack
+          , r = this.trigger[t].getBoundingClientRect().top + e.e.s._[this.url].curr
+          , a = r < e.win.h;
+        this.limit[t] = a ? -1 : r - e.sFxS;
+        let h = !a || s || i ? 0 : 700 + 200 * t;
         return {
-            fromBack: isAboveFold && isFromBack,
-            delay: delay
-        };
+            fromBack: a && s,
+            delay: h
+        }
     }
 }
-export default SFx;

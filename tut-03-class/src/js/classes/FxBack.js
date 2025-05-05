@@ -1,82 +1,56 @@
-class FxBack {
-    constructor() {
-        this.init();
-    }
+import Anima from "./Anima"
 
+export default class FxBack {
     init() {
-        const backElements = R.G.class("w-back");
-        this.backgroundElement = backElements[backElements.length - 1];
-        
-        this.animation = new Anima({
-            descendant: 1,
-            el: this.backgroundElement,
-            prop: [["y", 110, -110]]  // Animation properties: [property, startValue, endValue]
-        });
+        var t = R.G.class("w-back");
+        this.back = t[t.length - 1],
+            this.fx = new Anima({
+                descendant: 1,
+                el: this.back,
+                prop: [["y", 110, -110]]
+            })
     }
-
-    show(options) {
-        const state = _A;
-        const isLocalIntro = state.config.isLocal && state.introducing;
-        const isMutation = options.mutation;
-        
-        // Set default animation timing
-        let delay = options.delay;
-        let duration = 1500;
-        
-        // Adjust timing for special cases
-        if ((isMutation && state.fromBack) || isLocalIntro) {
-            delay = 0;
-            duration = 0;
-        }
-        
-        // Create animation sequence
-        const animationSequence = this.animation.motion({
+    show(t) {
+        var e = _A
+            , i = e.config.isLocal && e.introducing
+            , s = t.mutation;
+        let r = t.delay
+            , a = 1500;
+        (s && e.fromBack || i) && (r = 0,
+            a = 0);
+        let h = this.fx.motion({
             action: "show",
-            d: duration,
-            e: "o6",  // Easing function
-            delay: delay,
-            reverse: false
+            d: a,
+            e: "o6",
+            delay: r,
+            reverse: !1
         });
-        
         return {
-            play: () => {
-                // Prepare element for animation
-                R.PE.all(this.backgroundElement);
-                animationSequence.play();
+            play: t => {
+                R.PE.all(this.back),
+                    h.play()
             }
-        };
-    }
-
-    hide(options) {
-        const state = _A;
-        const isMutation = options.mutation;
-        
-        // Set default animation timing
-        let delay = options.delay;
-        let duration = 500;
-        
-        // Adjust timing for special cases
-        if (isMutation && state.fromBack) {
-            delay = 0;
-            duration = 0;
         }
-        
-        // Create animation sequence
-        const animationSequence = this.animation.motion({
-            action: "hide",
-            d: duration,
-            e: "o2",  // Easing function
-            delay: delay,
-            reverse: false
-        });
-        
-        return {
-            play: () => {
-                // Hide element before animation
-                R.PE.none(this.backgroundElement);
-                animationSequence.play();
-            }
-        };
     }
-}
-export default FxBack;
+    hide(t) {
+        var e = _A
+            , i = t.mutation;
+        let s = t.delay
+            , r = 500;
+        i && e.fromBack && (s = 0,
+            r = 0);
+        let a = this.fx.motion({
+            action: "hide",
+            d: r,
+            e: "o2",
+            delay: s,
+            reverse: !1
+        });
+        return {
+            play: t => {
+                R.PE.none(this.back),
+                    a.play()
+            }
+        }
+    }
+};

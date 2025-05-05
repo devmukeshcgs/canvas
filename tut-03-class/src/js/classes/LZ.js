@@ -1,116 +1,74 @@
-
-class LZ {
-    constructor() {
-        this.isNotRequired = false;
-        this.currentUrl = null;
-        this.images = [];
-        this.imageInstances = [];
-        this.lazyLoadLength = 0;
-    }
-
-    initialize() {
-        const appState = _A;
-
-        // Determine if lazy loading is required
-        this.isNotRequired = !appState.is.wo;
-        if (this.isNotRequired) return;
-
-        // Set URL and initialize images
-        this.currentUrl = appState.route.new.url;
-        this.images = [];
-        this.imageInstances = [];
-
-        // Get all lazy-load elements
-        const pages = Renderer.getClassElements("page");
-        const lastPage = pages[pages.length - 1];
-        const lazyElements = Renderer.getClassElements("_lz", lastPage);
-        this.lazyLoadLength = lazyElements.length;
-
-        // Populate image data
-        lazyElements.forEach((element, index) => {
-            this.images[index] = {
-                src: element.dataset.src,
-                dom: element,
-                decode: false,
-                show: false,
-            };
-        });
-
-        this.calculateImageLimits();
-    }
-
-    calculateImageLimits() {
-        if (this.isNotRequired) return;
-
-        const appState = _A;
-        const currentStep = appState.e.s._[this.currentUrl].step;
-        const windowHeight = appState.win.h;
-
-        this.images.forEach((image, index) => {
-            const domElement = image.dom;
-            if (Renderer.isDefined(domElement)) {
-                const topPosition = domElement.getBoundingClientRect().top + currentStep;
-                this.images[index].limit = {
-                    decode: Math.max(topPosition - 2 * windowHeight, 0),
-                    show: Math.max(topPosition - 0.8 * windowHeight, 0),
-                };
+export default class LZ {
+    initA() {
+        var t = _A;
+        if (this.notRequired = !t.is.wo,
+        !this.notRequired) {
+            this.url = t.route.new.url,
+            this.img = [],
+            this.imgI = [];
+            var t = R.G.class("page")
+              , t = t[t.length - 1]
+              , e = R.G.class("_lz", t);
+            this.lzL = e.length;
+            for (let t = 0; t < this.lzL; t++) {
+                var i = e[t];
+                this.img[t] = {
+                    src: i.dataset.src,
+                    dom: i
+                }
             }
-        });
-    }
-
-    updateLoop() {
-        if (this.isNotRequired) return;
-
-        const currentStep = _A.e.s._[this.currentUrl].step;
-
-        this.images.forEach((image, index) => {
-            // Decode image if within decoding range
-            if (currentStep > image.limit.decode && !image.decode) {
-                this.images[index].decode = true;
-                this.decodeImage(index);
-            }
-
-            // Show image if within display range
-            if (currentStep > image.limit.show && !image.show) {
-                this.images[index].show = true;
-                this.displayImage(index);
-            }
-        });
-    }
-
-    displayImage(index) {
-        const domElement = this.images[index].dom;
-        if (Renderer.isDefined(domElement)) {
-            domElement.classList.add("fx");
+            for (let t = 0; t < this.lzL; t++)
+                this.img[t].decode = !1,
+                this.img[t].show = !1;
+            this.resizeA()
         }
     }
-
-    decodeImage(index) {
-        const imageElement = this.images[index].dom;
-        const imageUrl = this.images[index].src;
-
-        // Create a new Image instance to handle decoding
-        this.imageInstances[index] = new Image();
-        this.imageInstances[index].src = imageUrl;
-
-        // Decode the image and update DOM when successful
-        this.imageInstances[index].decode().then(() => {
-            if (Renderer.isDefined(imageElement)) {
-                imageElement.src = imageUrl;
-                delete imageElement.dataset.src;
+    resizeA() {
+        if (!this.notRequired) {
+            var t = _A
+              , e = t.e.s._[this.url].step
+              , i = t.win.h;
+            for (let t = 0; t < this.lzL; t++) {
+                var s = this.img[t].dom;
+                R.Is.def(s) && (s = s.getBoundingClientRect().top + e,
+                this.img[t].limit = {
+                    decode: Math.max(s - 2 * i, 0),
+                    show: Math.max(s - .8 * i, 0)
+                })
             }
-        });
+        }
     }
-
-    clearResources() {
-        if (this.isNotRequired) return;
-
-        // Clear loaded images
-        this.imageInstances.forEach((imageInstance, index) => {
-            if (Renderer.isDefined(imageInstance)) {
-                imageInstance.src = "data:,";
+    loop() {
+        if (!this.notRequired) {
+            var e = _A.e.s._[this.url].step;
+            for (let t = 0; t < this.lzL; t++) {
+                var i = this.img[t];
+                e > i.limit.decode && !i.decode && (this.img[t].decode = !0,
+                this.decode(t)),
+                e > i.limit.show && !i.show && (this.img[t].show = !0,
+                this.show(t))
             }
-        });
+        }
+    }
+    show(t) {
+        this.img[t].dom.classList.add("fx")
+    }
+    decode(t) {
+        let e = this.img[t].dom
+          , i = this.img[t].src;
+        this.imgI[t] = new Image,
+        this.imgI[t].src = i,
+        this.imgI[t].decode().then(t => {
+            R.Is.def(e) && (e.src = i,
+            delete e.dataset.src)
+        }
+        )
+    }
+    off() {
+        if (!this.notRequired) {
+            var e = this.imgI.length;
+            for (let t = 0; t < e; t++)
+                R.Is.def(this.imgI[t]) && (this.imgI[t].src = "data:,")
+        }
     }
 }
-export default LZ

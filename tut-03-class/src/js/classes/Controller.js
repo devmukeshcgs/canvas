@@ -1,174 +1,121 @@
-class Controller {
-  constructor(config) {
-    this.config = config;
-    this.deviceType = config.device;
-    this.transitionM = config.transitionM;
-    this.cache = {};
-    this.mainElement = null;
-    this.targetElement = null;
-    this.isFromBackNavigation = false;
-    this.isMutating = false;
-    this.currentRoute = {
-      new: {
-        url: "",
-        page: "",
-      },
-    };
-  }
+import parseData from "../parseData";
+import Win from "./Win"
+import Rotate from "./Rotate"
+import { Router } from "../util/router";
 
-  initialize() {
-    // Set up event listeners
-    window.addEventListener("popstate", this.handlePopState.bind(this));
-    document.body.addEventListener("click", this.handleClick.bind(this));
-  }
-
-  handlePopState(event) {
-    // Handle browser back/forward navigation
-    if (event.state) {
-      this.currentRoute.new.url = event.state.url;
-      this.isFromBackNavigation = true;
-      this.navigateToNewContent();
-    }
-  }
-
-  handleClick(event) {
-    // Handle click events for navigation
-    let targetElement = event.target;
-    let isAnchorElement = false;
-    let isSubmitElement = false;
-
-    // Traverse up the DOM to find the relevant element
-    while (targetElement !== document.body) {
-      const elementTagName = targetElement.tagName;
-
-      if (elementTagName === "A") {
-        isAnchorElement = true;
-        break;
+export default class Controller {
+  constructor(t) {
+    var e = _A;
+    e.is[404] || (e.mutating = !0,
+      e.page = {},
+      e.fromBack = !1,
+      this.transitionM = t.transition.mutation,
+      this.device = t.device,
+      R.BM(this, ["eD"]),
+      new Win(this.device),
+      "m" === this.device && new Rotate,
+      e.e = new t.engine,
+      this.onPopstate(),
+      R.L(document.body, "a", "click", this.eD),
+      new t.transition.intro(t => {
+        this.intro(t)
       }
-
-      if (
-        (elementTagName === "INPUT" || elementTagName === "BUTTON") &&
-        targetElement.type === "submit"
-      ) {
-        isSubmitElement = true;
-        break;
+      ))
+  }
+  onPopstate() {
+    let e = document
+      , i = "complete"
+      , s = e.readyState !== i;
+    onload = t => {
+      setTimeout(t => {
+        s = !1
       }
-
-      targetElement = targetElement.parentNode;
+        , 0)
     }
-
-    if (isAnchorElement) {
-      this.handleAnchorClick(event, targetElement);
-    } else if (isSubmitElement) {
-      event.preventDefault();
-    }
-  }
-
-  handleAnchorClick(event, anchorElement) {
-    const href = anchorElement.href;
-    const protocol = href.substring(0, 3);
-
-    // Skip processing for special links
-    if (
-      anchorElement.hasAttribute("target") ||
-      protocol === "mai" ||
-      protocol === "tel"
-    ) {
-      return;
-    }
-
-    event.preventDefault();
-
-    if (!this.isMutating) {
-      const path = this.getPathFromUrl(href);
-
-      if (path !== this.currentRoute.new.url) {
-        this.isMutating = true;
-        this.prepareContentTransition(path, anchorElement);
-      } else if (anchorElement.id === "nav-logo") {
-        window.location.href = "/";
+      ,
+      onpopstate = t => {
+        s && e.readyState === i && (R.PD(t),
+          t.stopImmediatePropagation());
+        t = _A;
+        R.Is.und(t.config.routes) || (t.mutating ? this.hPS() : (t.mutating = !0,
+          this.out(location.pathname, "back")))
       }
+  }
+  eD(t) {
+    var e, i, s = _A;
+    let r = t.target
+      , a = !1
+      , h = !1;
+    for (; r;) {
+      var l = r.tagName;
+      if ("A" === l) {
+        a = !0;
+        break
+      }
+      if (("INPUT" === l || "BUTTON" === l) && "submit" === r.type) {
+        h = !0;
+        break
+      }
+      r = r.parentNode
     }
+    a ? (i = (e = r.href).substring(0, 3),
+      r.hasAttribute("target") || "mai" === i || "tel" === i || (R.PD(t),
+        s.mutating) || ((i = e.replace(/^.*\/\/[^/]+/, "")) !== s.route.new.url ? (s.mutating = !0,
+          this.out(i, r)) : "nav-logo" === r.id && (location.href = "/"))) : h && R.PD(t)
   }
-
-  getPathFromUrl(url) {
-    return url.replace(/^.*\/\/[^/]+/, "");
-  }
-
-  loadInitialContent(callback) {
-    const app = _A; // Global app instance
-    console.log("========", data);
-
+  intro(e) {
+    let i = _A;
     R.Fetch({
-      url: `${app.route.new.url}?webp=${app.webp}&device=${this.deviceType}`,
+      url: i.route.new.url + "?webp=" + i.webp + "&device=" + this.device,
       type: "html",
-      success: (response) => {
-        const { routes, data, cache } = JSON.parse(response);
-        console.log("========", data);
-
-        // Update app configuration
-        app.config.routes = routes;
-        app.data = data;
-        this.cache = cache;
-
-        // Insert new content
-        this.insertContent(document.body, "afterbegin", data.body);
-        this.mainElement = R.G.id("main");
-        this.transitionM = new this.transitionM();
-
-        if (callback) callback();
-      },
-    });
+      success: t => {
+        // t = JSON.parse(t);
+        t = parseData,
+          i.config.routes = t.routes,
+          i.data = t.data,
+          this.cache = t.cache,
+          this.add(document.body, "afterbegin", t.body),
+          this.main = R.G.id("main"),
+          this.transitionM = new this.transitionM,
+          e()
+      }
+    })
   }
-
-  prepareContentTransition(path, targetElement) {
-    this.updateRoute(path);
-    const app = _A;
-    this.targetElement = targetElement;
-    this.isFromBackNavigation = targetElement === "back";
-
-    app.page.update = () => {
-      this.navigateToNewContent();
-    };
+  out(t, e) {
+    Router(t);
+    t = _A;
+    t.target = e,
+      t.fromBack = "back" === e,
+      t.page.update = t => {
+        this.in()
+      }
+      ,
+      this.transitionM.out()
   }
-
-  navigateToNewContent() {
-    const app = _A;
-    const transition = this.transitionM;
-
-    // Handle navigation transition
-    if (this.isFromBackNavigation) {
-      this.isFromBackNavigation = false;
-      transition.in();
-    } else {
-      transition.in();
-    }
-
-    // Update page state
-    this.isMutating = false;
-    app.page = {};
+  in() {
+    var t = _A;
+    let e = this.cache[t.route.new.url];
+    document.title = e.title,
+      "back" !== t.target && this.hPS(),
+      t.page.insertNew = t => {
+        this.add(this.main, "beforeend", e.html)
+      }
+      ,
+      t.page.removeOld = t => {
+        var e = this.main.children[0];
+        e.parentNode.removeChild(e)
+      }
+      ,
+      this.transitionM.in()
   }
-
-  insertContent(parentElement, position, htmlContent) {
-    // Insert HTML content into the DOM
-    parentElement.insertAdjacentHTML(position, htmlContent);
+  add(t, e, i) {
+    t.insertAdjacentHTML(e, i)
   }
-
-  updateRoute(path) {
-    const app = _A;
-    this.currentRoute.new.url = path;
-    this.updateHistoryState();
-  }
-
-  updateHistoryState() {
-    const path = this.currentRoute.new.url;
-    history.pushState(
-      {
-        page: path,
-      },
-      "",
-      path
-    );
+  hPS() {
+    var t = _A.route.new.url;
+    history.pushState({
+      page: t
+    }, "", t)
   }
 }
-export default Controller;
+

@@ -1,134 +1,69 @@
-class Geo {
-  constructor(config) {
-    const appState = _A.rgl;
+import { create, identity, multiplyFn, scaleFn, translateFn } from "../util/fun";
 
-    this.gl = appState.gl; // WebGL context
-    this.renderer = appState.renderer; // Renderer reference
-    this.program = config.program; // Associated program
-    this.mode = config.mode; // Drawing mode (e.g., TRIANGLES)
-    this.face = config.face; // Face culling setting
-    this.attributes = config.attrib; // Attributes for the geometry
-
-    // Bind vertex array and attribute locations
-    this.renderer.vertexArray.bind(null);
-    this.program.getL(this.attributes, "Attrib");
-
-    this.modelMatrix = create(); // Initialize model matrix
+ 
+export default class Geo {
+  constructor(t) {
+      var e = _A.rgl;
+      this.gl = e.gl,
+      this.renderer = e.renderer,
+      this.program = t.program,
+      this.mode = t.mode,
+      this.face = t.face,
+      this.attrib = t.attrib,
+      this.renderer.vertexArray.bind(null),
+      this.program.getL(this.attrib, "Attrib"),
+      this.modelMatrix = create()
   }
-
-  /**
-   * Sets up the VAO (Vertex Array Object) for this geometry.
-   */
   setVAO() {
-    const renderer = this.renderer;
-
-    this.vao = renderer.vertexArray.create(); // Create a VAO
-    renderer.vertexArray.bind(this.vao); // Bind VAO
-    this.setupAttributes(); // Set up attributes
-    renderer.vertexArray.bind(null); // Unbind VAO
+      var t = this.renderer;
+      this.vao = t.vertexArray.create(),
+      t.vertexArray.bind(this.vao),
+      this.setAttrib(),
+      t.vertexArray.bind(null)
   }
-
-  /**
-   * Configures attributes for the geometry, binding buffers and enabling pointers.
-   */
-  setupAttributes() {
-    const gl = this.gl;
-
-    for (const name in this.attributes) {
-      if (Object.prototype.hasOwnProperty.call(this.attributes, name)) {
-        const attribute = this.attributes[name];
-        const isIndex = name === "index";
-
-        // Determine data type and set corresponding WebGL type
-        const dataType = attribute.data.constructor;
-        attribute.type =
-          dataType === Float32Array
-            ? gl.FLOAT
-            : dataType === Uint16Array
-            ? gl.UNSIGNED_SHORT
-            : gl.UNSIGNED_INT;
-
-        attribute.count = attribute.data.length / attribute.size; // Number of elements
-        attribute.target = isIndex ? gl.ELEMENT_ARRAY_BUFFER : gl.ARRAY_BUFFER;
-        attribute.normalize = false;
-
-        // Create and bind buffer
-        const buffer = gl.createBuffer();
-        gl.bindBuffer(attribute.target, buffer);
-        gl.bufferData(attribute.target, attribute.data, gl.STATIC_DRAW);
-
-        if (!isIndex) {
-          // Enable and configure vertex attribute pointer
-          gl.enableVertexAttribArray(attribute.location);
-          gl.vertexAttribPointer(
-            attribute.location,
-            attribute.size,
-            attribute.type,
-            attribute.normalize,
-            0,
-            0
-          );
-        }
-      }
-    }
+  setAttrib() {
+      var t, e, i, s, r = this.gl;
+      for (t in this.attrib)
+          R.Has(this.attrib, t) && (e = this.attrib[t],
+          i = "index" === t,
+          (s = e.data.constructor) === Float32Array ? e.type = r.FLOAT : s === Uint16Array ? e.type = r.UNSIGNED_SHORT : e.type = r.UNSIGNED_INT,
+          e.count = e.data.length / e.size,
+          e.target = i ? r.ELEMENT_ARRAY_BUFFER : r.ARRAY_BUFFER,
+          e.normalize = !1,
+          r.bindBuffer(e.target, r.createBuffer()),
+          r.bufferData(e.target, e.data, r.STATIC_DRAW),
+          i || (r.enableVertexAttribArray(e.location),
+          r.vertexAttribPointer(e.location, e.size, e.type, e.normalize, 0, 0)))
   }
-
-  /**
-   * Draws the geometry using the specified parameters.
-   * @param {Object} options - Parameters for drawing
-   */
-  draw(options) {
-    const gl = this.gl;
-    const renderer = this.renderer;
-
-    // Set face culling
-    renderer.setFaceCulling(this.face);
-
-    // Use the associated program
-    this.program.run();
-
-    // Update model matrix
-    this.modelMatrix = identity(this.modelMatrix);
-    const viewMatrix = multiplyFn(this.modelMatrix, renderer.viewMatrix);
-
-    // Apply transformations
-    const { lerp, ease, intro, media } = options;
-    const x = lerp.x + intro.x;
-    const y = lerp.y + ease.y + intro.y;
-    const width = lerp.w + intro.w;
-    const height = lerp.h + intro.h;
-    const scale = lerp.scale + intro.scale + ease.scale;
-
-    const adjustedMatrix = scaleFn(translateFn(viewMatrix, [x, -y, 0]), [
-      width,
-      height,
-      1,
-    ]);
-
-    // Handle aspect ratio adjustments
-    const uniforms = this.program.uniform;
-    let aspectX = 1;
-    let aspectY = media.ratio.wh / (width / height || 1);
-
-    if (aspectY < 1) {
-      aspectX = 1 / aspectY;
-      aspectY = 1;
-    }
-
-    uniforms.d.value = [aspectX * scale, aspectY * scale];
-    uniforms.e.value = [lerp.pX, (lerp.pY + ease.pY) / aspectY];
-    uniforms.h.value = adjustedMatrix;
-
-    // Set uniforms and bind texture
-    this.program.setUniform();
-    gl.bindTexture(gl.TEXTURE_2D, this.attributes.f.tex);
-
-    // Bind VAO and draw elements
-    renderer.vertexArray.bind(this.vao);
-
-    const indexBuffer = this.attributes.index;
-    gl.drawElements(gl[this.mode], indexBuffer.count, indexBuffer.type, 0);
+  draw(t) {
+      var e = this.gl
+        , i = this.renderer
+        , s = (i.setFaceCulling(this.face),
+      this.program.run(),
+      this.modelMatrix = identity(this.modelMatrix),
+      i.viewMatrix)
+        , s = multiplyFn(this.modelMatrix, s)
+        , r = t.lerp
+        , a = t.ease
+        , h = t.intro
+        , l = r.x + h.x
+        , o = r.y + a.y + h.y
+        , n = r.w + h.w
+        , p = r.h + h.h
+        , h = r.scale + h.scale + a.scale
+        , l = (s = scaleFn(translateFn(s, [l, -o, 0]), [n, p, 1]),
+      this.program.uniform);
+      let d = 1
+        , c = t.media.ratio.wh / (n / p || 1);
+      c < 1 && (d = 1 / c,
+      c = 1),
+      l.d.value = [c * h, d * h],
+      l.e.value = [r.pX, (r.pY + a.pY) / d],
+      l.h.value = s,
+      this.program.setUniform(),
+      e.bindTexture(e.TEXTURE_2D, this.attrib.f.tex),
+      i.vertexArray.bind(this.vao);
+      o = this.attrib.index;
+      e.drawElements(e[this.mode], o.count, o.type, 0)
   }
-}
-
-export default Geo;
+};

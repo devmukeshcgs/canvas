@@ -1,48 +1,26 @@
-class Rotate {
+export default class Rotate {
     constructor() {
-        this.isInDOM = false;
-        
-        // Bind methods
-        R.BM(this, ["resize"]);
-        
-        // Setup resize observer
-        new R.ROR(this.resize).on();
-        
-        // Initial check
-        this.resize();
+        this.inDom = !1,
+            R.BM(this, ["resize"]),
+            new R.ROR(this.resize).on(),
+            this.resize()
     }
-
     resize() {
-        const isLandscape = _A.winRatio.widthToHeight > 1;
-        
-        if (isLandscape && !this.isInDOM) {
-            this.addRotationMessage();
-        } else if (!isLandscape && this.isInDOM) {
-            this.removeRotationMessage();
-        }
+        var t = 1 < _A.winRatio.wh;
+        t && !this.inDom ? this.a() : !t && this.inDom && this.r()
     }
-
-    addRotationMessage() {
-        // Create wrapper div
-        this.rotationMessageWrapper = document.createElement("div");
-        this.rotationMessageWrapper.className = "rotation-message-wrapper";
-        
-        // Create message div
-        const messageElement = document.createElement("div");
-        messageElement.className = "rotation-message";
-        messageElement.textContent = "Please rotate your device.";
-        
-        // Append elements
-        this.rotationMessageWrapper.appendChild(messageElement);
-        document.body.prepend(this.rotationMessageWrapper);
-        
-        this.isInDOM = true;
+    a() {
+        this.issW = R.Cr("div"),
+            this.issW.className = "iss-w";
+        var t = R.Cr("div");
+        t.className = "iss",
+            t.textContent = "Please rotate your device.",
+            this.issW.appendChild(t),
+            document.body.prepend(this.issW),
+            this.inDom = !0
     }
-
-    removeRotationMessage() {
-        if (this.rotationMessageWrapper && this.rotationMessageWrapper.parentNode) {
-            this.rotationMessageWrapper.parentNode.removeChild(this.rotationMessageWrapper);
-        }
-        this.isInDOM = false;
+    r() {
+        this.issW.parentNode.removeChild(this.issW),
+            this.inDom = !1
     }
 }

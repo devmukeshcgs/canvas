@@ -3,12 +3,12 @@ import Page from "./Page";
 class Fx {
     constructor() {
         this.sail = R.G.id("sail"),
-            this.sailFx = new R.M({
-                el: this.sail,
-                p: {
-                    opacity: [0, 1]
-                }
-            })
+        this.sailFx = new R.M({
+            el: this.sail,
+            p: {
+                opacity: [0, 1]
+            }
+        })
     }
     fadeOut(t) {
         var e = _A.fromBack;
@@ -23,12 +23,12 @@ class Fx {
         new Page({
             intro: !1
         }).play(),
-            this.sailFx.play({
-                reverse: !0,
-                d: t,
-                e: "o3",
-                cb: !1
-            })
+        this.sailFx.play({
+            reverse: !0,
+            d: t,
+            e: "o3",
+            cb: !1
+        })
     }
     tr() {
         new Page({

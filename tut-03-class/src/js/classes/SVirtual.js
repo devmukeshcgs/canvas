@@ -1,133 +1,73 @@
-class SVirtual {
-    constructor(config) {
-        // Callback function for handling scroll
-        this.callback = config.callback;
-
-        // Initialize state variables
-        this.isActive = false;
-        this.isFirefox = Renderer.Sniffer.isFirefox;
-
-        // Bind methods
-        Renderer.bindMethods(this, ["handleEvent"]);
-
-        // Add event listeners
-        const documentElement = document;
-        const eventTypes = ["wheel", "keydown"];
-        const targets = [documentElement.body, documentElement];
-        for (let i = 0; i < targets.length; i++) {
-            Renderer.addListener(targets[i], "add", eventTypes[i], this.handleEvent);
-        }
+ 
+export default class SVirtual {
+    constructor(t) {
+        this.cbFn = t.cb,
+        this.isOn = !1,
+        this.isFF = R.Snif.isFirefox,
+        R.BM(this, ["fn"]);
+        var t = document
+          , e = ["wheel", "keydown"]
+          , i = [t.body, t];
+        for (let t = 0; t < 2; t++)
+            R.L(i[t], "a", e[t], this.fn)
     }
-
-    // Initialize with configuration
-    initialize(config) {
-        this.isHorizontal = config.isHorizontal;
+    init(t) {
+        this.isX = t.isX
     }
-
-    // Activate the scroller
-    activate() {
-        this.isTicking = false;
-        this.isActive = true;
+    on() {
+        this.tick = !1,
+        this.isOn = !0
     }
-
-    // Deactivate the scroller
-    deactivate() {
-        this.isActive = false;
+    off() {
+        this.isOn = !1
     }
-
-    // Handle resize events
-    handleResize() {
-        this.spaceGap = _A.window.height - 40;
+    resize() {
+        this.spaceGap = _A.win.h - 40
     }
-
-    // General event handler
-    handleEvent(event) {
-        this.event = event;
-        this.eventType = event.type;
-        this.eventKey = event.key;
-
-        // Prevent default for all events except "Tab"
-        if (this.eventType === "keydown" && this.eventKey !== "Tab") {
-            Renderer.preventDefault(event);
-        }
-
-        // Process events if active and not currently ticking
-        if (this.isActive && !this.isTicking) {
-            this.isTicking = true;
-            this.processEvent();
-        }
+    fn(t) {
+        this.e = t,
+        this.eT = t.type,
+        this.eK = t.key,
+        "keydown" === this.eT && "Tab" !== this.eK || R.PD(t),
+        this.isOn && !this.tick && (this.tick = !0,
+        this.run())
     }
-
-    // Process the current event
-    processEvent() {
-        const eventType = this.eventType;
-        if (eventType === "wheel") {
-            this.handleWheelEvent();
-        } else if (eventType === "keydown") {
-            this.handleKeyEvent();
-        }
+    run() {
+        var t = this.eT;
+        "wheel" === t ? this.w() : "keydown" === t && this.key()
     }
-
-    // Handle wheel events
-    handleWheelEvent() {
-        const event = this.event;
-        let delta;
-
-        // Determine the scroll delta
-        const verticalDelta = event.wheelDeltaY || -event.deltaY;
-        if (this.isHorizontal) {
-            const horizontalDelta = event.wheelDeltaX || -event.deltaX;
-            delta = Math.abs(horizontalDelta) >= Math.abs(verticalDelta) ? horizontalDelta : verticalDelta;
-        } else {
-            delta = verticalDelta;
-        }
-
-        // Adjust delta for Firefox or other browsers
-        if (this.isFirefox && event.deltaMode === 1) {
-            delta *= 0.75;
-        } else {
-            delta *= 0.556;
-        }
-
-        // Set scroll offset and trigger callback
-        this.scrollOffset = -delta;
-        this.triggerCallback();
+    w() {
+        var t = this.e;
+        let e;
+        var i, s = t.wheelDeltaY || -1 * t.deltaY;
+        e = this.isX && (i = t.wheelDeltaX || -1 * t.deltaX,
+        Math.abs(i) >= Math.abs(s)) ? i : s,
+        this.isFF && 1 === t.deltaMode ? e *= .75 : e *= .556,
+        this.s = -e,
+        this.cb()
     }
-
-    // Handle key events
-    handleKeyEvent() {
-        const key = this.eventKey;
-        const isScrollUp = key === "ArrowUp" || key === "ArrowLeft";
-        const isScrollDown = key === "ArrowDown" || key === "ArrowRight";
-        const isSpaceKey = key === " ";
-
-        if (isScrollUp || isScrollDown || isSpaceKey) {
-            const appState = _A;
-
-            if (appState.mode === "in" && appState.isHovering) {
-                appState.engine.hoverControl.arrowSlide(isScrollDown || isSpaceKey ? 1 : -1);
-                this.isTicking = false;
-            } else {
-                let scrollAmount = 100;
-                if (isScrollUp) {
-                    scrollAmount *= -1;
-                } else if (isSpaceKey) {
-                    const direction = this.event.shiftKey ? -1 : 1;
-                    scrollAmount = this.spaceGap * direction;
-                }
-
-                this.scrollOffset = scrollAmount;
-                this.triggerCallback();
+    key() {
+        var e = this.eK
+          , i = "ArrowUp" === e || "ArrowLeft" === e
+          , t = "ArrowDown" === e || "ArrowRight" === e
+          , e = " " === e;
+        if (i || t || e) {
+            var s = _A;
+            if ("in" === s.mode && s.is.ho)
+                s.e.ho.gl.arrowSlide(t || e ? 1 : -1),
+                this.tick = !1;
+            else {
+                let t = 100;
+                i ? t *= -1 : e && (s = this.e.shiftKey ? -1 : 1,
+                t = this.spaceGap * s),
+                this.s = t,
+                this.cb()
             }
-        } else {
-            this.isTicking = false;
-        }
+        } else
+            this.tick = !1
     }
-
-    // Trigger the callback with the scroll offset
-    triggerCallback() {
-        this.callback(this.scrollOffset);
-        this.isTicking = false;
+    cb() {
+        this.cbFn(this.s),
+        this.tick = !1
     }
 }
-export default SVirtual

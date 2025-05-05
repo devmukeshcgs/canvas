@@ -1,4 +1,6 @@
-class Anima {
+import ObjArr from "./ObjArr"
+
+export default class Anima {
     constructor(t) {
         this.a = _A,
         this.delay = t.delay || 0;
@@ -73,4 +75,3 @@ class Anima {
         }
     }
 }
-export default Anima;

@@ -1,4 +1,5 @@
-class ObjArr {
+import Obj from "./Obj"
+export default class ObjArr {
     constructor(t) {
         this.a = _A,
         this.delay = t.delay;
@@ -42,4 +43,3 @@ class ObjArr {
             })
     }
 }
-export default ObjArr;

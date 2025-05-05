@@ -1,130 +1,84 @@
-class Texture {
-  constructor(glContext) {
-    this.gl = glContext; // WebGL context
-    this.textures = {}; // Stores textures
+ 
+export default class Texture {
+  constructor(t) {
+      this.gl = t,
+      this.tex = {}
   }
-
-  /**
-   * Starts loading textures based on provided configurations.
-   * @param {Function} callback - Function to be called when loading completes.
-   */
-  run(callback) {
-    const appState = _A;
-    this.callback = callback;
-    const newRoute = appState.route.new.url;
-    const resources = appState.data;
-    const resourceKeys = Object.keys(resources);
-    const resourceCount = resourceKeys.length;
-
-    this.loadingIndicator = R.G.id("load-no").children[0];
-    this.loadedCount = 0;
-    this.previousLoadedCount = 0;
-
-    R.BM(this, ["updateProgress"]);
-    this.rafHandler = new R.RafR(this.updateProgress);
-
-    for (let i = 0; i < resourceCount; i++) {
-      const resourceKey = resourceKeys[i];
-      const resourceData = resources[resourceKey];
-
-      if (!resourceData.preload && newRoute !== resourceKey) continue;
-
-      this.loadTexture({
-        media: resourceData,
-        url: resourceKey,
-        useGL: true,
-        external: false,
-      });
-    }
-
-    this.rafHandler.run();
-  }
-
-  /**
-   * Loads a texture from the provided configuration.
-   * @param {Object} config - Texture configuration.
-   */
-  loadTexture(config) {
-    const fileExtension = config.external ? "" : _A.img.jpg;
-    const resourceUrl = config.url;
-    const useGL = config.useGL;
-    const mediaData = config.media;
-
-    if (useGL) {
-      this.textures[resourceUrl] = [];
-    }
-
-    for (let i = 0; i < mediaData.texL; i++) {
-      this.loadSingleTexture({
-        src: mediaData.tex[i] + fileExtension,
-        index: i,
-        url: resourceUrl,
-        useGL: useGL,
-      });
-      this.totalTextures = (this.totalTextures || 0) + 1;
-    }
-  }
-
-  /**
-   * Loads an individual texture and initializes it if needed.
-   * @param {Object} config - Configuration for a single texture.
-   */
-  loadSingleTexture(config) {
-    const img = new Image();
-    img.onload = () => {
-      if (config.useGL) {
-        const textureAttributes = this.initializeTexture(img);
-        this.textures[config.url][config.index] = {
-          attrib: textureAttributes,
-          element: img,
-          type: "img",
-        };
+  run(t) {
+      var e = _A
+        , t = (this.cb = t,
+      e.route)
+        , i = t.new.url
+        , s = (this.dom = R.G.id("load-no").children[0],
+      this.no = 0,
+      this.prevNo = 0,
+      R.BM(this, ["loop"]),
+      this.raf = new R.RafR(this.loop),
+      e.data)
+        , r = Object.keys(s)
+        , a = r.length;
+      for (let t = this.texL = 0; t < a; t++) {
+          var h = r[t]
+            , l = s[h];
+          !l.preload && i !== h || this.imgSet({
+              media: l,
+              url: h,
+              gl: !0,
+              ext: !1
+          })
       }
-      this.loadedCount++;
-    };
-    img.src = config.src;
+      this.raf.run()
   }
-
-  /**
-   * Initializes a texture in WebGL.
-   * @param {HTMLImageElement} img - Image to be used for the texture.
-   * @returns {WebGLTexture} - The initialized WebGL texture.
-   */
-  initializeTexture(img) {
-    const gl = this.gl;
-    const texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-
-    const parameters = [
-      ["WRAP_S", "CLAMP_TO_EDGE"],
-      ["WRAP_T", "CLAMP_TO_EDGE"],
-      ["MIN_FILTER", "LINEAR"],
-      ["MAG_FILTER", "LINEAR"],
-    ];
-
-    for (const [param, value] of parameters) {
-      gl.texParameteri(gl.TEXTURE_2D, gl[`TEXTURE_${param}`], gl[value]);
-    }
-
-    return texture;
+  imgSet(t) {
+      var e = t.ext ? "" : _A.img.jpg
+        , i = t.url
+        , s = t.gl
+        , t = t.media
+        , r = t.tex
+        , a = t.texL;
+      s && (this.tex[i] = []);
+      for (let t = 0; t < a; t++)
+          this.imgSetOne({
+              src: r[t] + e,
+              index: t,
+              url: i,
+              gl: s
+          }),
+          this.texL++
   }
-
-  /**
-   * Updates the loading progress and triggers the callback when complete.
-   */
-  updateProgress() {
-    if (this.loadedCount !== this.previousLoadedCount) {
-      this.previousLoadedCount = this.loadedCount;
-      this.loadingIndicator.textContent = `${Math.round(
-        (100 / this.totalTextures) * this.loadedCount
-      )}%`;
-    }
-
-    if (this.loadedCount === this.totalTextures) {
-      this.rafHandler.stop();
-      this.callback();
-    }
+  imgSetOne(t) {
+      var e = t.src;
+      let i = t.url
+        , s = t.gl
+        , r = t.index
+        , a = new Image;
+      a.onload = t => {
+          var e;
+          s && (e = this.texInit(a),
+          this.tex[i][r] = {
+              attrib: e,
+              element: a,
+              type: "img"
+          }),
+          this.no++
+      }
+      ,
+      a.src = e
   }
-}
-export default Texture;
+  texInit(t) {
+      var e = this.gl
+        , i = e.createTexture()
+        , s = (e.bindTexture(e.TEXTURE_2D, i),
+      e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, e.RGBA, e.UNSIGNED_BYTE, t),
+      [["WRAP_S", "CLAMP_TO_EDGE"], ["WRAP_T", "CLAMP_TO_EDGE"], ["MIN_FILTER", "LINEAR"], ["MAG_FILTER", "LINEAR"]]);
+      for (let t = 0; t < 4; t++)
+          e.texParameteri(e.TEXTURE_2D, e["TEXTURE_" + s[t][0]], e[s[t][1]]);
+      return i
+  }
+  loop() {
+      this.no !== this.prevNo && (this.prevNo = this.no,
+      this.dom.textContent = Math.round(100 / this.texL * this.no) + "%"),
+      this.no === this.texL && (this.raf.stop(),
+      this.cb())
+  }
+};

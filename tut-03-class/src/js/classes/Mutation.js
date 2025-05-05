@@ -2,59 +2,39 @@ import Fx from "./Fx";
 
 class Mutation {
     constructor() {
-        this.transitionEffects = new Fx();
+        this.mutationFx = new Fx
     }
-
-    // Handles the transition out
     out() {
-        const context = _A;
-        const currentState = context.is;
-        const previousState = context.was;
-
-        // Determine transition types
-        this.isHeaderToWide = previousState.ho && currentState.wo;
-        this.isWideToWide = previousState.wo && currentState.wo;
-        this.isHeaderToAbout = previousState.ho && currentState.ab;
-
-        // Deactivate current event listeners
-        context.e.off();
-
-        // Perform navigation updates
-        if (currentState.ho || currentState.ab) {
-            context.e.nav.active.up();
-        }
-
-        if (this.isHeaderToWide || this.isWideToWide || this.isHeaderToAbout) {
-            if (this.isWideToWide) {
-                context.e.wo.fxBack.hide({ mutation: true, delay: 0 }).play();
+        let e = _A;
+        var t = e.is
+          , i = e.was;
+        this.hToW = i.ho && t.wo,
+        this.wToW = i.wo && t.wo,
+        this.hToA = i.ho && t.ab,
+        e.e.off(),
+        (t.ho || t.ab) && e.e.nav.active.up(),
+        this.hToW || this.wToW || this.hToA ? (this.wToW && e.e.wo.fxBack.hide({
+            mutation: !0,
+            delay: 0
+        }).play(),
+        e.page.update()) : (i.wo && e.e.wo.fxBack.hide({
+            mutation: !0,
+            delay: 0
+        }).play(),
+        this.mutationFx.fadeOut({
+            cb: t => {
+                e.page.update()
             }
-            context.page.update();
-        } else {
-            if (previousState.wo) {
-                context.e.wo.fxBack.hide({ mutation: true, delay: 0 }).play();
-            }
-            this.transitionEffects.fadeOut({
-                callback: () => {
-                    context.page.update();
-                }
-            });
-        }
+        }))
     }
-
-    // Handles the transition in
     in() {
-        const context = _A;
-
-        if (this.isHeaderToWide || this.isWideToWide || this.isHeaderToAbout) {
-            context.page.insertNew();
-            context.e.init();
-            this.transitionEffects.trigger();
-        } else {
-            context.page.removeOld();
-            context.page.insertNew();
-            context.e.init();
-            this.transitionEffects.fadeIn();
-        }
+        var t = _A;
+        this.hToW || this.wToW || this.hToA ? (t.page.insertNew(),
+        t.e.init(),
+        this.mutationFx.tr()) : (t.page.removeOld(),
+        t.page.insertNew(),
+        t.e.init(),
+        this.mutationFx.fadeIn())
     }
 }
 export default Mutation;

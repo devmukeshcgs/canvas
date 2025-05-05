@@ -1,256 +1,163 @@
-import SVirtual from "./SVirtual";
+import SVirtual from "./SVirtual"
+import SVTo from "./SVTo"
+import MM from "./MM"
 
-
-class Scroll {
+export default class Scroll {
     constructor() {
-        // Cursor position
-        _A.cursor = { x: -1, y: -1 };
-
-        // State variables
-        this.isScrollRequired = false;
-        this.minScroll = 0;
-        this.maxScrollStep = 0;
-        this.isMouseDown = false;
-        this.isDragging = false;
-        this.previousPosition = 0;
-        this.scrollStep = 0;
-
-        // Bind methods
-        Renderer.bindMethods(this, ["handleScroll", "updateScroll", "handleMove", "handleMouseDown", "handleMouseUp"]);
-
-        // Initialize subsystems
-        this.virtualScroll = new SVirtual({ cb: this.handleScroll });
-        this.smoothScrollTo = new SVTo({ sUp: this.updateScroll });
-        this.mouseManager = new MM({ cb: this.handleMove });
+        _A.cursor = {
+            x: -1,
+            y: -1
+        },
+        this.rqd = !1,
+        this.min = 0,
+        this.maxStep = 0,
+        this.isDown = !1,
+        this.isDragging = !1,
+        this.prev = 0,
+        this.step = 0,
+        R.BM(this, ["sFn", "sUp", "move", "down", "up"]),
+        this.scrollV = new SVirtual({
+            cb: this.sFn
+        }),
+        this.sVTo = new SVTo({
+            sUp: this.sUp
+        }),
+        this.mm = new MM({
+            cb: this.move
+        })
     }
-
-    initializeRoutes() {
-        const appState = _A;
-        const routes = appState.config.routes;
-        const routeKeys = Object.keys(routes);
-
-        this.routes = {};
-        routeKeys.forEach(routeKey => {
-            this.routes[routeKey] = {
-                current: 0,
-                target: 0,
+    intro() {
+        var t = _A
+          , t = (this._ = {},
+        t.config.routes)
+          , e = Object.keys(t)
+          , i = e.length;
+        for (let t = 0; t < i; t++) {
+            var s = e[t];
+            this._[s] = {
+                curr: 0,
+                targ: 0,
                 step: 0,
-                expansion: 0
-            };
-        });
-    }
-
-    initialize(config) {
-        const appState = _A;
-
-        // Initialize state
-        this.currentUrl = appState.route.new.url;
-        this.isHomePage = appState.is.ho;
-        this.isWorkPage = appState.is.wo;
-        this.isHorizontalScroll = config.isX;
-
-        // Initialize subsystems
-        this.virtualScroll.init(config);
-        this.smoothScrollTo.init();
-
-        // Set initial scroll position
-        let initialScroll = 0;
-        if (this.isHomePage && appState.mode === "out") {
-            const homeData = appState.e.ho.gl.data;
-            initialScroll = (homeData.out.width + homeData.out.gap.x) * appState.index;
-        }
-        this.updateAllScroll(initialScroll);
-        this.handleResize();
-    }
-
-    handleResize() {
-        const appState = _A;
-
-        // Update scroll range
-        this.virtualScroll.resize();
-        this.scrollStep = 1.5 * appState.win.h;
-
-        if (this.isHomePage) {
-            this.maxScroll = appState.e.ho.gl.max;
-        } else {
-            const pages = Renderer.getClassElements("page");
-            const lastPageHeight = pages[pages.length - 1].offsetHeight;
-            this.maxScroll = Math.max(lastPageHeight - appState.win.h, 0);
-            this.maxScrollStep = this.maxScroll;
-
-            if (this.isWorkPage) {
-                this.maxScroll += this.scrollStep;
-            }
-
-            this.isZeroMaxScroll = this.maxScroll === 0;
-        }
-
-        // Clamp current scroll position
-        const currentTarget = this.routes[this.currentUrl].target;
-        this.updateAllScroll(this.clampScroll(currentTarget));
-    }
-
-    expandScroll(current, step) {
-        if (this.scrollStep === 0) return 0;
-
-        const normalized = Renderer.Clamp((current - step) / this.scrollStep, 0, 1);
-        const interpolated = Renderer.interpolate(0.15, 1, normalized);
-        return Renderer.ease(interpolated);
-    }
-
-    handleScroll(delta) {
-        if (!this.isMouseDown) {
-            this.smoothScrollTo.stop();
-            const appState = _A;
-
-            if (this.isHomePage && appState.mode === "in") {
-                appState.e.ho.gl.change("out");
-            } else {
-                this.updateScroll(this.clampScroll(this.routes[this.currentUrl].target + delta));
+                expand: 0
             }
         }
     }
-
-    updateScroll(target) {
-        this.routes[this.currentUrl].target = target;
+    init(t) {
+        var e = _A;
+        this.url = e.route.new.url,
+        this.isHome = e.is.ho,
+        this.isWork = e.is.wo,
+        this.isX = t.isX,
+        this.scrollV.init(t),
+        this.sVTo.init();
+        let i = 0;
+        this.isHome && "out" === e.mode && (t = e.e.ho.gl.data,
+        i = (t.out.w + t.out.gap.x) * e.index),
+        this.sUpAll(i),
+        this.resize()
     }
-
-    handleMouseDown(event) {
-        if (event.ctrlKey || event.target.tagName === "A" || event.button !== 0) {
-            Renderer.preventDefault(event);
-            return;
-        }
-
-        this.isMouseDown = true;
-        this.isDragging = false;
-        this.startPosition = this.isHorizontalScroll ? event.pageX : event.pageY;
-        this.targetPosition = this.routes[this.currentUrl].target;
-        this.previousTargetPosition = this.targetPosition;
+    resize() {
+        var t, e = _A, e = (this.scrollV.resize(),
+        this.step = 1.5 * e.win.h,
+        this.isHome ? this.max = e.e.ho.gl.max : (t = (e = R.G.class("page")).length,
+        this.max = Math.max(e[t - 1].offsetHeight - _A.win.h, 0),
+        this.maxStep = this.max,
+        this.isWork && (this.max += this.step),
+        this.maxZero = 0 === this.max),
+        this.clamp(this._[this.url].targ));
+        this.sUpAll(e)
     }
-
-    handleMove(x, y, event) {
-        Renderer.preventDefault(event);
-        const appState = _A;
-
-        // Update cursor position
-        appState.cursor.x = x;
-        appState.cursor.y = y;
-
-        if (this.isMouseDown) {
-            const mode = appState.mode;
-            const currentPosition = this.isHorizontalScroll ? x : y;
-
-            if (Math.abs(currentPosition - this.startPosition) >= 15) {
-                if (!(this.isHomePage && mode === "out")) {
-                    if (currentPosition > this.previousPosition && this.targetPosition === this.minScroll) {
-                        this.startPosition = currentPosition - (this.previousTargetPosition - this.minScroll) / 3;
-                    } else if (currentPosition < this.previousPosition && this.targetPosition === this.maxScroll) {
-                        this.startPosition = currentPosition - (this.previousTargetPosition - this.maxScroll) / 3;
-                    }
-
-                    this.previousPosition = currentPosition;
-                    this.targetPosition = 3 * -(currentPosition - this.startPosition) + this.previousTargetPosition;
-                    this.targetPosition = this.clampScroll(this.targetPosition);
-                    this.updateScroll(this.targetPosition);
-                }
-
-                this.isDragging = Math.abs(x - this.startPosition) > 10;
-                if (this.isHomePage && mode === "in" && this.isDragging) {
-                    appState.e.ho.gl.change("out");
-                }
-            }
-        }
+    expand(t, e) {
+        return 0 === this.step ? 0 : (t = R.Clamp(t - e, 0, this.step) / this.step,
+        e = R.iLerp(.15, 1, t),
+        R.Ease.i2(e))
     }
-
-    handleMouseUp(event) {
-        if (!this.isMouseDown) return;
-
-        this.isMouseDown = false;
-        if (!this.isDragging) {
-            const appState = _A;
-            const mode = appState.mode;
-
-            if (this.isHomePage) {
-                const homeGl = appState.e.ho.gl;
-                if (mode === "out" && homeGl.indexOver > -1) {
-                    appState.index = homeGl.indexOver;
-                    homeGl.change("in");
-                } else if (mode === "in") {
-                    homeGl.inSlide(event);
-                }
-            }
-        }
+    sFn(t) {
+        var e;
+        this.isDown || (this.sVTo.stop(),
+        e = _A,
+        this.isHome && "in" === e.mode ? e.e.ho.gl.change("out") : this.sUp(this.clamp(this._[this.url].targ + t)))
     }
-
+    sUp(t) {
+        var e = this.url;
+        this._[e].targ = t
+    }
+    down(t) {
+        t.ctrlKey || "A" === t.target.tagName || 0 !== t.button ? R.PD(t) : (this.isDown = !0,
+        this.isDragging = !1,
+        this.start = this.isX ? t.pageX : t.pageY,
+        this.targ = this._[this.url].targ,
+        this.targPrev = this.targ)
+    }
+    move(t, e, i) {
+        R.PD(i);
+        var s, i = _A;
+        i.cursor.x = t,
+        i.cursor.y = e,
+        this.isDown && (s = i.mode,
+        e = this.isX ? t : e,
+        Math.abs(e - this.start) < 15 || (this.isHome && "out" !== s || (e > this.prev && this.targ === this.min ? this.start = e - (this.targPrev - this.min) / 3 : e < this.prev && this.targ === this.max && (this.start = e - (this.targPrev - this.max) / 3),
+        this.prev = e,
+        this.targ = 3 * -(e - this.start) + this.targPrev,
+        this.targ = this.clamp(this.targ),
+        this.sUp(this.targ)),
+        this.isDragging = 10 < Math.abs(t - this.start),
+        this.isHome && "in" === s && this.isDragging && i.e.ho.gl.change("out")))
+    }
+    up(t) {
+        var e, i, s;
+        this.isDown && (this.isDown = !1,
+        this.isDragging || (i = (e = _A).mode,
+        this.isHome && (s = e.e.ho.gl,
+        "out" === i ? -1 < s.indexOver && (e.index = s.indexOver,
+        s.change("in")) : "in" === i && s.inSlide(t))))
+    }
     loop() {
-        logic("Scroll loop");
-        const appState = _A;
-        const lerpProgress = appState.lerpP;
-
-        this.isScrollRequired = this.isScrollUnequal();
-        if (this.isScrollRequired) {
-            const currentRoute = this.routes[this.currentUrl];
-            currentRoute.current = Renderer.damp(currentRoute.current, currentRoute.target, lerpProgress);
-            const clampedStep = this.clampScrollStep(currentRoute.target);
-            currentRoute.step = Renderer.damp(currentRoute.step, clampedStep, lerpProgress);
-            currentRoute.expansion = this.expandScroll(currentRoute.current, currentRoute.step);
-
-            if (this.isWorkPage && currentRoute.current >= this.maxScroll - 2) {
-                this.smoothScrollTo.off();
-                Renderer.getClassElements("w-footer-a")[0].click();
-            }
-        }
+        var t, e, i = _A.lerpP;
+        this.rqd = this.unequal(),
+        this.rqd && (t = this.url,
+        this._[t].curr = R.Damp(this._[t].curr, this._[t].targ, i),
+        e = this.clampStep(this._[t].targ),
+        this._[t].step = R.Damp(this._[t].step, e, i),
+        this._[t].expand = this.expand(this._[t].curr, this._[t].step),
+        this.isWork) && this._[t].curr >= this.max - 2 && (this.sVTo.off(),
+        R.G.class("w-footer-a")[0].click())
     }
-
-    isScrollUnequal() {
-        const currentRoute = this.routes[this.currentUrl];
-        return Renderer.round(Math.abs(currentRoute.current - currentRoute.target)) !== 0;
+    unequal() {
+        var t = this.url;
+        return 0 !== R.R(Math.abs(this._[t].curr - this._[t].targ))
     }
-
-    updateAllScroll(target) {
-        const clampedStep = this.clampScrollStep(target);
-        const currentRoute = this.routes[this.currentUrl];
-
-        currentRoute.target = target;
-        currentRoute.current = target;
-        currentRoute.step = clampedStep;
-        currentRoute.expansion = this.expandScroll(target, clampedStep);
-
-        this.targetPosition = target;
-        this.previousTargetPosition = target;
+    sUpAll(t) {
+        var e = this.clampStep(t)
+          , i = this.url;
+        this._[i].targ = t,
+        this._[i].curr = t,
+        this._[i].step = e,
+        this._[i].expand = this.expand(t, e),
+        this.targ = t,
+        this.targPrev = t
     }
-
-    clampScroll(value) {
-        return Renderer.round(Renderer.Clamp(value, this.minScroll, this.maxScroll));
+    clamp(t) {
+        return R.R(R.Clamp(t, this.min, this.max))
     }
-
-    clampScrollStep(value) {
-        return Renderer.round(Renderer.Clamp(value, this.minScroll, this.maxScrollStep));
+    clampStep(t) {
+        return R.R(R.Clamp(t, this.min, this.maxStep))
     }
-
-    manageEventListeners(action) {
-        const documentElement = document;
-        Renderer.addListener(documentElement, action, "mousedown", this.handleMouseDown);
-        Renderer.addListener(documentElement, action, "mouseup", this.handleMouseUp);
+    l(t) {
+        var e = document;
+        R.L(e, t, "mousedown", this.down),
+        R.L(e, t, "mouseup", this.up)
     }
-
-    enable() {
-        if (!this.isZeroMaxScroll) {
-            this.smoothScrollTo.on();
-            this.virtualScroll.on();
-            this.mouseManager.on();
-            this.manageEventListeners("add");
-        }
+    on() {
+        this.maxZero || (this.sVTo.on(),
+        this.scrollV.on(),
+        this.mm.on(),
+        this.l("a"))
     }
-
-    disable() {
-        if (!this.isZeroMaxScroll) {
-            this.smoothScrollTo.off();
-            this.virtualScroll.off();
-            this.mouseManager.off();
-            this.manageEventListeners("remove");
-        }
+    off() {
+        this.maxZero || (this.sVTo.off(),
+        this.scrollV.off(),
+        this.mm.off(),
+        this.l("r"))
     }
 }
-
-export default Scroll

@@ -1,116 +1,41 @@
-import AnimationManager from '../utils/AnimationManager';
+import GL$1 from "./GLS1"
+import FxTitle from "./FxTitle"
+import FxCross from "./FxCross"
+import FxPgn from "./FxPgn"
+import Over from "./Over"
 
-/**
- * Home class handles the home page functionality and animations
- */
-class HomePage {
+export default class Home {
     constructor() {
-        this.initialized = false;
-        this.elements = {};
-        this.animationManager = new AnimationManager();
+        this.gl = new GL$1,
+            this.fxTitle = new FxTitle,
+            this.fxCross = new FxCross,
+            this.fxPgn = new FxPgn,
+            this.over = new Over
     }
-
-    /**
-     * Initializes the home page
-     */
-    init() {
-        if (this.initialized) return;
-        
-        this.initialized = true;
-        this.setupElements();
-        this.setupEventListeners();
-        this.setupAnimations();
+    initB() {
+        this.notRequired = !_A.is.ho,
+            this.notRequired || this.gl.initB()
     }
-
-    /**
-     * Sets up DOM elements
-     */
-    setupElements() {
-        this.elements = {
-            hero: document.querySelector('.hero'),
-            navigation: document.querySelector('.nav'),
-            content: document.querySelector('.content')
-        };
+    initA() {
+        this.notRequired || (this.gl.initA(),
+            this.fxTitle.init(),
+            this.fxCross.init(),
+            this.fxPgn.init(),
+            this.over.init())
     }
-
-    /**
-     * Sets up event listeners
-     */
-    setupEventListeners() {
-        window.addEventListener('resize', this.handleResize.bind(this));
-        window.addEventListener('scroll', this.handleScroll.bind(this));
+    resizeB() {
+        this.notRequired || this.gl.resizeB()
     }
-
-    /**
-     * Sets up animations using AnimationManager
-     */
-    setupAnimations() {
-        // Create hero animation
-        this.animationManager.createSlideAnimation('hero', this.elements.hero, {
-            y: 50,
-            duration: 1
-        });
-
-        // Create content animation
-        this.animationManager.createSlideAnimation('content', this.elements.content, {
-            y: 30,
-            duration: 0.8,
-            delay: 0.5
-        });
+    resizeA() {
+        this.notRequired || this.gl.resizeA()
     }
-
-    /**
-     * Handles window resize events
-     */
-    handleResize() {
-        // Update any responsive layouts or animations
-        this.updateLayout();
+    loop() {
+        this.notRequired && !this.gl.moving || this.gl.loop()
     }
-
-    /**
-     * Handles scroll events
-     */
-    handleScroll() {
-        // Handle scroll-based animations or effects
-        this.updateScrollEffects();
+    on() {
+        this.over.on()
     }
-
-    /**
-     * Updates layout based on window size
-     */
-    updateLayout() {
-        // Implement responsive layout updates
-    }
-
-    /**
-     * Updates scroll-based effects
-     */
-    updateScrollEffects() {
-        // Implement scroll-based animations or effects
-    }
-
-    /**
-     * Starts all animations
-     */
-    play() {
-        this.animationManager.playSequence(['hero', 'content']);
-    }
-
-    /**
-     * Pauses all animations
-     */
-    pause() {
-        this.animationManager.pause('hero');
-        this.animationManager.pause('content');
-    }
-
-    /**
-     * Resets all animations
-     */
-    reset() {
-        this.animationManager.reset('hero');
-        this.animationManager.reset('content');
+    off() {
+        this.over.off()
     }
 }
-
-export default HomePage; 
