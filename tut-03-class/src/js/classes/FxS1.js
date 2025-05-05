@@ -1,8 +1,7 @@
 import Page from "./Page";
 
-class FxS1 {
+class Fx$1 {
     constructor() {
-        console.log("FxS1");
         // Select elements for animations
         this.noElement = R.G.id("load-no").children[0];
         this.background = R.G.id("load-bg");
@@ -37,4 +36,4 @@ class FxS1 {
     }
 }
 
-export default FxS1;
+export default Fx$1;

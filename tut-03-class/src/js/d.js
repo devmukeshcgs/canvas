@@ -1,8 +1,7 @@
 import Controller from "./classes/Controller"
 import E from "./classes/Engine"
 import Mutation from "./classes/Mutation"
-import RGL from "./classes/RGL"
-import Page from "./classes/Page"
+ import Intro from "./classes/Intro"
 
 window.R = {},
 R.iLerp = (t, e, i) => R.Clamp((i - t) / (e - t), 0, 1),
@@ -4056,31 +4055,31 @@ class Rotate {
 //         }
 //     }
 // }
-let Fx$1 = class {
-    constructor() {
-        this.no = R.G.id("load-no").children[0],
-        this.bg = R.G.id("load-bg")
-    }
-    run() {
-        let t = 1e3;
-        _A.config.isLocal && (t = 0);
-        var e = new Page({
-            intro: !0
-        })
-          , i = new R.TL;
-        i.from({
-            el: this.no,
-            p: {
-                y: [0, -110]
-            },
-            d: t,
-            e: "i4"
-        }),
-        e.play(),
-        i.play(),
-        R.O(this.bg, 0)
-    }
-}
+// let Fx$1 = class {
+//     constructor() {
+//         this.no = R.G.id("load-no").children[0],
+//         this.bg = R.G.id("load-bg")
+//     }
+//     run() {
+//         let t = 1e3;
+//         _A.config.isLocal && (t = 0);
+//         var e = new Page({
+//             intro: !0
+//         })
+//           , i = new R.TL;
+//         i.from({
+//             el: this.no,
+//             p: {
+//                 y: [0, -110]
+//             },
+//             d: t,
+//             e: "i4"
+//         }),
+//         e.play(),
+//         i.play(),
+//         R.O(this.bg, 0)
+//     }
+// }
 ;
 // function create() {
 //     var t = new Float32Array(16);
@@ -4863,32 +4862,32 @@ let Fx$1 = class {
 //         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
 //     }
 // }
-class Intro {
-    constructor(t) {
-        let e = _A;
-        e.introducing = !0,
-        R.T(R.G.id("load-no").children[0], 0, 0),
-        this.introFx = new Fx$1,
-        t(t => {
-            e.rgl = new RGL,
-            e.rgl.load(t => {
-                this.cb()
-            }
-            )
-        }
-        )
-    }
-    cb() {
-        var t = _A;
-        t.rgl.intro(),
-        t.e.intro(),
-        t.e.init(),
-        t.e.load.intro(),
-        t.rgl.run(),
-        t.e.run(),
-        this.introFx.run()
-    }
-}
+// class Intro {
+//     constructor(t) {
+//         let e = _A;
+//         e.introducing = !0,
+//         R.T(R.G.id("load-no").children[0], 0, 0),
+//         this.introFx = new Fx$1,
+//         t(t => {
+//             e.rgl = new RGL,
+//             e.rgl.load(t => {
+//                 this.cb()
+//             }
+//             )
+//         }
+//         )
+//     }
+//     cb() {
+//         var t = _A;
+//         t.rgl.intro(),
+//         t.e.intro(),
+//         t.e.init(),
+//         t.e.load.intro(),
+//         t.rgl.run(),
+//         t.e.run(),
+//         this.introFx.run()
+//     }
+// }
 // class Fx {
 //     constructor() {
 //         this.sail = R.G.id("sail"),
