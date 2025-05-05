@@ -1,6 +1,5 @@
-console.log("LoadManager");
 
-class LoadManager {
+class Load {
     constructor() {
         this.moving = false;
     }
@@ -174,4 +173,4 @@ class LoadManager {
 }
 
 
-export default LoadManager
+export default Load

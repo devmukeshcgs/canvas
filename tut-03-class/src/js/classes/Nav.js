@@ -3,7 +3,7 @@ import AnimationManager from '../utils/AnimationManager';
 /**
  * Navigation class handles the site navigation and menu interactions
  */
-class Navigation {
+class Nav {
     constructor() {
         this.initialized = false;
         this.isOpen = false;
@@ -146,4 +146,4 @@ class Navigation {
     }
 }
 
-export default Navigation; 
+export default Nav; 

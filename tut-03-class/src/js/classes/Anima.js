@@ -6,7 +6,7 @@ class Anima {
           , i = t.descendant
           , s = t.random || !1;
         let r = t.el;
-        RR.Is.und(r.length) && (r = [r]),
+        R.Is.und(r.length) && (r = [r]),
         this.lineL = r.length;
         var a = t.prop
           , t = (this.start = a[0][1],
@@ -31,10 +31,10 @@ class Anima {
         }
     }
     motion(t) {
-        RR.Is.def(this.letterAnim) && this.letterAnim.pause();
+        R.Is.def(this.letterAnim) && this.letterAnim.pause();
         var e = "show" === t.action
           , i = t.d;
-        let s = RR.Ease[t.e]
+        let s = R.Ease[t.e]
           , r = this.line
           , a = this.lineL;
         var h = r[0].obj[0].curr[0];
@@ -49,7 +49,7 @@ class Anima {
                 propEndIsEnd: l
             });
         h = e ? 1 - (this.objLength - 1) * this.delay : 1;
-        return this.letterAnim = new RR.M({
+        return this.letterAnim = new R.M({
             delay: o,
             d: i / h,
             update: t => {

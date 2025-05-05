@@ -1,11 +1,11 @@
 import HomePage from "./Home";
-import LazyLoader from "./LazyLoader";
-import LoadManager from "./LoadManager";
-import Navigation from "./Navigation";
+import LZ from "./LZ";
+import Load from "./Load";
+import Nav from "./Nav";
 import Scroll from "./Scroll";
 import WorkPage from "./WorkPage";
 import AboutPage from "./AboutPage";
-import ScrollIntersectionObserver from "./SIntersect";
+import SIntersect from "./SIntersect";
 
 class Engine {
     constructor() {
@@ -17,14 +17,14 @@ class Engine {
         app.currentMode = "in";
 
         // Bind methods
-        RR.BM(this, ["resize", "loop"]);
+        R.BM(this, ["resize", "loop"]);
 
         // Initialize components
-        this.animationFrame = new RR.RafR(this.loop);
+        this.animationFrame = new R.RafR(this.loop);
         this.scrollHandler = new Scroll();
-        this.lazyLoader = new LazyLoader();
-        this.loadManager = new LoadManager();
-        this.navigation = new Navigation();
+        this.lazyLoader = new LZ();
+        this.loadManager = new Load();
+        this.navigation = new Nav();
         this.homePage = new HomePage();
         this.workPage = new WorkPage();
         this.aboutPage = new AboutPage();
@@ -53,7 +53,7 @@ class Engine {
         });
 
         // Initialize additional components
-        this.scrollIntersectionObserver = new ScrollIntersectionObserver();
+        this.scrollIntersectionObserver = new SIntersect();
         this.lazyLoader.initializeAssets();
         this.homePage.initializeAdvanced();
         this.workPage.initializeAdvanced();
@@ -74,7 +74,7 @@ class Engine {
 
     startApp() {
         // Set up resize observer and start animation loop
-        new RR.ROR(this.handleResize).on();
+        new R.ROR(this.handleResize).on();
         this.animationFrame.run();
     }
 

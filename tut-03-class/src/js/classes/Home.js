@@ -8,7 +8,6 @@ class HomePage {
         this.initialized = false;
         this.elements = {};
         this.animationManager = new AnimationManager();
-        console.log("Home");
     }
 
     /**

@@ -90,14 +90,12 @@ function slideImage(fromIndex, toIndex, direction) {
 document.getElementById("prevBtn").addEventListener("click", () => {
   const previousIndex = (currentIndex - 1 + images.length) % images.length;
   slideImage(currentIndex, previousIndex, "right");
-  console.log("img index--------------->", currentIndex, previousIndex);
 
 });
 
 document.getElementById("nextBtn").addEventListener("click", () => {
   const nextIndex = (currentIndex + 1) % images.length;
   slideImage(currentIndex, nextIndex, "left");
-  console.log("img index--------------->", currentIndex, nextIndex);
 });
 
 // Start the application

@@ -1,104 +1,42 @@
-import AnimationManager from '../utils/AnimationManager';
+import RGL from './RGL';
+import FxS1 from './FxS1';
 
-/**
- * Intro class handles the introduction/loading animations and transitions
- */
 class Intro {
-    constructor() {
-        this.initialized = false;
-        this.elements = {};
-        this.isPlaying = false;
-        this.animationManager = new AnimationManager();
-        console.log("Intro");
-    }
+    constructor(initializer) {
+        const appContext = _A;
+        appContext.introducing = true;
 
-    /**
-     * Initializes the intro animations
-     */
-    init() {
-        if (this.initialized) return;
-        
-        this.initialized = true;
-        this.setupElements();
-        this.setupAnimations();
-    }
+        // Reset the loading screen
+        R.T(R.G.id("load-no").children[0], 0, 0);
 
-    /**
-     * Sets up DOM elements for intro animations
-     */
-    setupElements() {
-        this.elements = {
-            loader: document.querySelector('.loader'),
-            logo: document.querySelector('.logo'),
-            content: document.querySelector('.intro-content')
-        };
-    }
+        // Initialize transition effects
+        this.introEffects = new FxS1();
 
-    /**
-     * Sets up animations using AnimationManager
-     */
-    setupAnimations() {
-        // Create loader animation
-        this.animationManager.createScaleAnimation('loader', this.elements.loader, {
-            scale: 0.8,
-            duration: 0.8
-        });
-
-        // Create logo animation
-        this.animationManager.createSlideAnimation('logo', this.elements.logo, {
-            y: 30,
-            duration: 1,
-            delay: 0.5
-        });
-
-        // Create content animation
-        this.animationManager.createSlideAnimation('content', this.elements.content, {
-            y: 20,
-            duration: 0.8,
-            delay: 1
+        // Initialize the scene with the provided initializer function
+        initializer((callback) => {
+            appContext.rgl = new RGL();
+            appContext.rgl.load(() => {
+                this.onLoadComplete();
+            });
         });
     }
 
-    /**
-     * Plays the intro sequence
-     * @param {Function} onComplete - Callback function to execute after completion
-     */
-    play(onComplete) {
-        if (this.isPlaying) return;
-        
-        this.isPlaying = true;
-        this.animationManager.playSequence(['loader', 'logo', 'content'], () => {
-            this.isPlaying = false;
-            if (onComplete) onComplete();
-        });
-    }
+    // Callback invoked after resources are loaded
+    onLoadComplete() {
+        const appContext = _A;
 
-    /**
-     * Pauses all animations
-     */
-    pause() {
-        this.animationManager.pause('loader');
-        this.animationManager.pause('logo');
-        this.animationManager.pause('content');
-    }
+        // Run intro sequence and initialize components
+        appContext.rgl.intro();
+        appContext.e.intro();
+        appContext.e.init();
+        appContext.e.load.intro();
 
-    /**
-     * Resumes all animations
-     */
-    resume() {
-        this.animationManager.play('loader');
-        this.animationManager.play('logo');
-        this.animationManager.play('content');
-    }
+        // Start main application functionality
+        appContext.rgl.run();
+        appContext.e.run();
 
-    /**
-     * Resets all animations to their initial state
-     */
-    reset() {
-        this.animationManager.reset('loader');
-        this.animationManager.reset('logo');
-        this.animationManager.reset('content');
-        this.isPlaying = false;
+        // Trigger any intro-specific effects
+        this.introEffects.run();
     }
 }
 

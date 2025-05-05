@@ -1,5 +1,4 @@
 
-console.log("WorkPage");
 class WorkPage {
     constructor() {
         // Initialize components

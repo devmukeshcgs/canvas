@@ -3,7 +3,7 @@ class Active {
     this.page = ["ho", "ab"];
   }
   intro() {
-    (this.nav = RR.G.class("nav-a")), this.up();
+    (this.nav = R.G.class("nav-a")), this.up();
   }
   up() {
     var t = _A,
@@ -14,7 +14,7 @@ class Active {
   upC(t, e) {
     t = this.page.indexOf(t);
     -1 < t &&
-      (RR.PE["add" === e ? "none" : "all"](this.nav[t]),
+      (R.PE["add" === e ? "none" : "all"](this.nav[t]),
       this.nav[t].classList[e]("on"));
   }
 }

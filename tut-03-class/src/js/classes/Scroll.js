@@ -1,5 +1,4 @@
 import SVirtual from "./SVirtual";
-console.log("Scroll class");
 
 
 class Scroll {

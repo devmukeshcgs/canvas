@@ -1,6 +1,5 @@
-console.log("ScrollIntersectionObserver");
-//ScrollIntersectionObserver
-class ScrollIntersectionObserver {
+//SIntersect
+class SIntersect {
     constructor() {
         const app = _A;
 
@@ -94,4 +93,4 @@ class ScrollIntersectionObserver {
     }
 }
 
-export default ScrollIntersectionObserver; 
+export default SIntersect; 

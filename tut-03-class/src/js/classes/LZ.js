@@ -1,6 +1,5 @@
-console.log("LazyLoader");
 
-class LazyLoader {
+class LZ {
     constructor() {
         this.isNotRequired = false;
         this.currentUrl = null;
@@ -114,4 +113,4 @@ class LazyLoader {
         });
     }
 }
-export default LazyLoader
+export default LZ
