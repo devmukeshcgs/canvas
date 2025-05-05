@@ -16,7 +16,7 @@ export default class SVTo {
     }
     wFooterFn() {
         this.stop();
-        var t = _A.e.s
+        var t = _A.engine.scroll
           , e = R.R(t._[this.url].curr)
           , t = t.max
           , i = Math.abs(t - e)
@@ -30,7 +30,7 @@ export default class SVTo {
     }
     aLeftFn(t) {
         this.stop();
-        var e, i, s, r = _A, a = r.e.s;
+        var e, i, s, r = _A, a = r.engine.scroll;
         a.isDragging || (e = R.R(a._[this.url].curr),
         i = R.G.id("a-l"),
         s = R.G.id("a-r").offsetHeight / i.offsetHeight,
@@ -46,14 +46,14 @@ export default class SVTo {
     wPreviewFn(t) {
         this.stop();
         var e = _A
-          , i = e.e.s
+          , i = e.engine.scroll
           , i = R.R(i._[this.url].step)
           , s = R.G.class("w-preview-w")
           , s = s[s.length - 1]
           , t = R.Index.class(t.target, "w-preview", s)
           , s = R.G.class("w-s")
           , s = s[s.length - 1].children[t]
-          , t = s.getBoundingClientRect().top - this.y(s) - e.e.wo.preview.areaRight
+          , t = s.getBoundingClientRect().top - this.y(s) - e.engine.wo.preview.areaRight
           , s = Math.abs(t - i)
           , e = 0 === s ? 0 : R.Lerp(100, 400, R.Clamp(s / 3e3, 0, 1));
         this.play({
@@ -70,7 +70,7 @@ export default class SVTo {
     wHeroScrollFn() {
         this.stop();
         var t = _A
-          , e = t.e.s
+          , e = t.engine.scroll
           , e = R.R(e._[this.url].step)
           , t = t.win.h
           , i = Math.abs(t - e)

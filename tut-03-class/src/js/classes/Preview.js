@@ -19,8 +19,8 @@ export default class Preview {
   }
   loop() {
       var t = _A
-        , e = t.e.s._[this.url].curr
-        , t = t.e.s.max
+        , e = t.engine.scroll._[this.url].curr
+        , t = t.engine.scroll.max
         , i = R.Remap(0, t, 0, this.max, e)
         , t = R.Remap(0, t, 0, this.maxP, e);
       R.T(this.leftW, 0, -R.R(i), "px"),

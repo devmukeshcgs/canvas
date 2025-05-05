@@ -37,7 +37,7 @@ export default class SIntersect {
         if (!this.notRequired) {
             let t = _A;
             var e = this.isWork ? "step" : "curr"
-              , i = R.R(t.e.s._[this.url][e])
+              , i = R.R(t.engine.scroll._[this.url][e])
               , s = t.win.h;
             for (let e = 0; e < this.arrL; e++) {
                 let t = this.arr[e];
@@ -54,7 +54,7 @@ export default class SIntersect {
     run() {
         if (!this.notRequired) {
             var t = this.isWork ? "step" : "curr"
-              , e = R.R(_A.e.s._[this.url][t]);
+              , e = R.R(_A.engine.scroll._[this.url][t]);
             for (let t = 0; t < this.arrL; t++) {
                 var i = this.arr[t];
                 e > i.inside.start && e <= i.inside.end ? (i.isOut && (i.isOut = !1),

@@ -3,9 +3,9 @@ import Camera from "./Camera"
 import Texture from "./Texture"
 
 export default class Renderer {
-  constructor(t) {
+  constructor(_STATE) {
       this.gl = _A.rgl.gl,
-      this.page = t.page,
+      this.page = _STATE.page,
       this.state = {
           depthTest: null,
           cullFace: null
@@ -14,8 +14,8 @@ export default class Renderer {
       var e = this.gl.getExtension("OES_vertex_array_object")
         , i = ["create", "bind"];
       this.vertexArray = {};
-      for (let t = 0; t < 2; t++) {
-          var s = i[t];
+      for (let _STATE = 0; _STATE < 2; _STATE++) {
+          var s = i[_STATE];
           this.vertexArray[s] = e[s + "VertexArrayOES"].bind(e)
       }
       this.programCurrId = null,
@@ -25,20 +25,20 @@ export default class Renderer {
       },
       this.camera = new Camera,
       this.texture = new Texture(this.gl),
-      this.texture.run(t.cb)
+      this.texture.run(_STATE.cb)
   }
-  setFaceCulling(t) {
-      this.state.cullFace !== t && (this.state.cullFace = t,
+  setFaceCulling(_STATE) {
+      this.state.cullFace !== _STATE && (this.state.cullFace = _STATE,
       this.gl.enable(this.gl.CULL_FACE),
-      this.gl.cullFace(this.gl[t]))
+      this.gl.cullFace(this.gl[_STATE]))
   }
   setBlendFunc() {
       this.gl.enable(this.gl.BLEND),
       this.gl.blendFuncSeparate(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA, this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA)
   }
   resize() {
-      var t = _A
-        , e = t.win
+      var _STATE = _A
+        , e = _STATE.win
         , i = 600 < e.w ? 1.5 : 3
         , e = (this.width = e.w,
       this.height = e.h,
@@ -47,13 +47,13 @@ export default class Renderer {
       this.camera.resize({
           aspect: this.gl.canvas.width / this.gl.canvas.height
       }),
-      t.rgl.clear(),
+      _STATE.rgl.clear(),
       this.width * i)
-        , t = this.height * i;
+        , _STATE = this.height * i;
       this.resizing = !0,
-      this.viewport.width === e && this.viewport.height === t || (this.viewport.width = e,
-      this.viewport.height = t,
-      this.gl.viewport(0, 0, e, t),
+      this.viewport.width === e && this.viewport.height === _STATE || (this.viewport.width = e,
+      this.viewport.height = _STATE,
+      this.gl.viewport(0, 0, e, _STATE),
       this.viewMatrix = this.camera.render({
           x: 0,
           y: 0,
@@ -61,23 +61,23 @@ export default class Renderer {
       }))
   }
   render(e) {
-      var t = _A
-        , i = t.route
+      var _STATE = _A
+        , i = _STATE.route
         , s = i.old.page
         , r = i.new.page
         , a = this.page.includes(r)
         , h = this.page.includes(s);
-      let l = this.resizing || t.e.s.rqd;
+      let l = this.resizing || _STATE.engine.scroll.rqd;
       this.resizing && (this.resizing = !1),
-      (l = l || t.e.load.moving) || h && t.e[s].gl.moving && (l = !0),
-      l || a && t.e[r].gl.moving && (l = !0);
+      (l = l || _STATE.engine.load.moving) || h && _STATE.engine[s].gl.moving && (l = !0),
+      l || a && _STATE.engine[r].gl.moving && (l = !0);
       var o = []
         , n = (h ? (a && o.push(i.new.url),
-      (t.mutating || t.e[s].gl.moving) && o.push(i.old.url)) : (t.e.load.moving && o.push("load"),
+      (_STATE.mutating || _STATE.engine[s].gl.moving) && o.push(i.old.url)) : (_STATE.engine.load.moving && o.push("load"),
       a && o.push(i.new.url)),
       o.length);
-      for (let t = 0; t < n; t++)
-          ("/" === o[t] ? (e.large.draw(l),
-          e.small) : e[o[t]]).draw(l)
+      for (let _STATE = 0; _STATE < n; _STATE++)
+          ("/" === o[_STATE] ? (e.large.draw(l),
+          e.small) : e[o[_STATE]]).draw(l)
   }
 };

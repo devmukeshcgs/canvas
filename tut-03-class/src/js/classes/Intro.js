@@ -27,13 +27,13 @@ class Intro {
 
         // Run intro sequence and initialize components
         appContext.rgl.intro();
-        appContext.e.intro();
-        appContext.e.init();
-        appContext.e.load.intro();
+        appContext.engine.intro();
+        appContext.engine.init();
+        appContext.engine.load.intro();
 
         // Start main application functionality
         appContext.rgl.run();
-        appContext.e.run();
+        appContext.engine.run();
 
         // Trigger any intro-specific effects
         this.introEffects.run();

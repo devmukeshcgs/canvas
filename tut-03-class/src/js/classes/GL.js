@@ -29,7 +29,7 @@ export default class GL {
     }
     resizeA() {
         var t = _A
-          , e = t.e.s._[this.url].step
+          , e = t.engine.scroll._[this.url].step
           , i = t.win.w
           , s = t.win.h
           , t = t.isOver169 ? t.winHpsdH : t.winWpsdW
@@ -82,13 +82,13 @@ export default class GL {
     loop() {
         this.texSet();
         var t = _A
-          , e = t.e.s._[this.url]
+          , e = t.engine.scroll._[this.url]
           , i = t.win.h;
-        R.T(this.progress, 0, R.R(R.Lerp(-100, 0, e.curr / t.e.s.max))),
+        R.T(this.progress, 0, R.R(R.Lerp(-100, 0, e.curr / t.engine.scroll.max))),
         this.tex[0].lerp.pY = R.Lerp(0, -.3, R.Clamp(e.step, 0, i) / i)
     }
     texSet() {
-        var t = _A.e.s._[this.url]
+        var t = _A.engine.scroll._[this.url]
           , e = t.step
           , i = t.expand
           , t = (this.moving = this.easing,

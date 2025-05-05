@@ -27,7 +27,7 @@ let Preview$1 = class {
             this.areaMax *= t
     }
     loop() {
-        var t = _A.e.s._[this.url].step;
+        var t = _A.engine.scroll._[this.url].step;
         t < this.previewStart ? (R.T(this.preview, 0, -R.R(t), "px"),
             R.T(this.area, 0, -R.R(t), "px")) : t >= this.previewStart && t <= this.previewEnd ? (R.T(this.preview, 0, -R.R(this.previewStart + R.Remap(this.previewStart, this.previewEnd, 0, this.prlx, t)), "px"),
                 R.T(this.area, 0, -R.R(this.previewStart - R.Remap(this.previewStart, this.previewEnd, 0, this.areaMax - this.prlx, t)), "px")) : t > this.previewEnd && (R.T(this.preview, 0, -R.R(t - this.previewMax), "px"),

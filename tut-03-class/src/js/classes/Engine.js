@@ -9,13 +9,13 @@ import SIntersect from "./SIntersect"
 
 export default class E {
     constructor() {
-        var t = _A;
-        t.lerpP = .083,
-            t.index = 0,
-            t.mode = "in",
+        var _STATE = _A;
+        _STATE.lerpP = .083,
+            _STATE.index = 0,
+            _STATE.mode = "in",
             R.BM(this, ["resize", "loop"]),
             this.raf = new R.RafR(this.loop),
-            this.s = new Scroll,
+            this.scroll = new Scroll,
             this.lz = new LZ,
             this.load = new Load,
             this.nav = new Nav,
@@ -24,18 +24,18 @@ export default class E {
             this.ab = new About
     }
     intro() {
-        this.s.intro(),
+        this.scroll.intro(),
             this.nav.intro()
     }
     init() {
-        var t = _A
-            , t = (t.is.wo && (t.index = t.config.routes[t.route.new.url].index),
+        var _STATE = _A
+            , _STATE = (_STATE.is.wo && (_STATE.index = _STATE.config.routes[_STATE.route.new.url].index),
                 this.ho.initB(),
                 this.wo.initB(),
             {
-                isX: t.is.ho
+                isX: _STATE.is.ho
             });
-        this.s.init(t),
+        this.scroll.init(_STATE),
             this.sIntersect = new SIntersect,
             this.lz.initA(),
             this.ho.initA(),
@@ -44,7 +44,7 @@ export default class E {
     }
     resize() {
         this.ho.resizeB(),
-            this.s.resize(),
+            this.scroll.resize(),
             this.sIntersect.resize(),
             this.ho.resizeA(),
             this.wo.resizeA(),
@@ -58,18 +58,18 @@ export default class E {
     }
     on() {
         this.ho.on(),
-            this.s.on()
+            this.scroll.on()
     }
     loop() {
-        this.s.loop(),
+        this.scroll.loop(),
             this.lz.loop(),
             this.wo.loop(),
             this.ho.loop(),
             this.ab.loop(),
-            this.s.rqd && this.sIntersect.run()
+            this.scroll.rqd && this.sIntersect.run()
     }
     off() {
-        this.s.off(),
+        this.scroll.off(),
             this.lz.off(),
             this.ho.off()
     }

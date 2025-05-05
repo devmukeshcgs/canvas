@@ -51,15 +51,17 @@ export default class Scroll {
         this.scrollV.init(t),
         this.sVTo.init();
         let i = 0;
-        this.isHome && "out" === e.mode && (t = e.e.ho.gl.data,
+        this.isHome && "out" === e.mode && (t = e.engine.ho.gl.data,
         i = (t.out.w + t.out.gap.x) * e.index),
         this.sUpAll(i),
         this.resize()
     }
     resize() {
-        var t, e = _A, e = (this.scrollV.resize(),
+        var t,
+         e = _A, 
+         e = (this.scrollV.resize(),
         this.step = 1.5 * e.win.h,
-        this.isHome ? this.max = e.e.ho.gl.max : (t = (e = R.G.class("page")).length,
+        this.isHome ? this.max = e.engine.ho.gl.max : (t = (e = R.G.class("page")).length,
         this.max = Math.max(e[t - 1].offsetHeight - _A.win.h, 0),
         this.maxStep = this.max,
         this.isWork && (this.max += this.step),
@@ -76,7 +78,7 @@ export default class Scroll {
         var e;
         this.isDown || (this.sVTo.stop(),
         e = _A,
-        this.isHome && "in" === e.mode ? e.e.ho.gl.change("out") : this.sUp(this.clamp(this._[this.url].targ + t)))
+        this.isHome && "in" === e.mode ? e.engine.ho.gl.change("out") : this.sUp(this.clamp(this._[this.url].targ + t)))
     }
     sUp(t) {
         var e = this.url;
@@ -102,13 +104,13 @@ export default class Scroll {
         this.targ = this.clamp(this.targ),
         this.sUp(this.targ)),
         this.isDragging = 10 < Math.abs(t - this.start),
-        this.isHome && "in" === s && this.isDragging && i.e.ho.gl.change("out")))
+        this.isHome && "in" === s && this.isDragging && i.engine.ho.gl.change("out")))
     }
     up(t) {
         var e, i, s;
         this.isDown && (this.isDown = !1,
         this.isDragging || (i = (e = _A).mode,
-        this.isHome && (s = e.e.ho.gl,
+        this.isHome && (s = e.engine.ho.gl,
         "out" === i ? -1 < s.indexOver && (e.index = s.indexOver,
         s.change("in")) : "in" === i && s.inSlide(t))))
     }

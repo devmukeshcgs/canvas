@@ -155,16 +155,16 @@ let GL$1 = class {
           , i = (this.crossR += 90 * i,
         this.cross[0].style.transform = "rotate(" + this.crossR + "deg)",
         this.cross[1].style.transform = "rotate(" + this.crossR + "deg)",
-        t.e.ho.fxTitle.hide({
+        t.engine.ho.fxTitle.hide({
             index: s,
             delay: 0
         }))
-          , v = t.e.ho.fxTitle.show({
+          , v = t.engine.ho.fxTitle.show({
             index: r,
             delay: 300
         });
         this._pgn.targ = r * this.pgnH,
-        R.Is.def(t.e.load.introFx) && (t.e.load.introFx.pause(),
+        R.Is.def(t.engine.load.introFx) && (t.engine.load.introFx.pause(),
         (t = this.texLarge[0]).intro.x = 0,
         t.intro.y = 0,
         t.intro.w = 0,
@@ -187,25 +187,25 @@ let GL$1 = class {
           , t = (e.mode = t,
         this._pgn.targ = i * this.pgnH,
         s ? "show" : "hide")
-          , t = e.e.ho.fxTitle[t]({
+          , t = e.engine.ho.fxTitle[t]({
             index: i,
             delay: s ? 240 : 0
         })
           , r = s ? 500 : 0
           , a = s ? "show" : "hide"
-          , h = e.e.ho.fxCross.middle({
+          , h = e.engine.ho.fxCross.middle({
             a: s ? "hide" : "show",
             delay: s ? 0 : 300
         })
-          , a = e.e.ho.fxCross.side({
+          , a = e.engine.ho.fxCross.side({
             a: a,
             delay: r
         });
         this.zIndex();
         let l;
-        s ? (l = -R.R(e.e.s._[this.url].curr),
-        e.e.s.sUpAll(0)) : (l = R.Clamp(this.outGapXW * i, 0, this.data.out.max),
-        e.e.s.sUpAll(l));
+        s ? (l = -R.R(e.engine.scroll._[this.url].curr),
+        e.engine.scroll.sUpAll(0)) : (l = R.Clamp(this.outGapXW * i, 0, this.data.out.max),
+        e.engine.scroll.sUpAll(l));
         for (let t = 0; t < this.texLargeL; t++)
             this.large.curr[t].x += l,
             this.large.targ[t].x += l;
@@ -225,12 +225,12 @@ let GL$1 = class {
         this.texSet()
     }
     texSet() {
-        var t = _A
-          , e = "out" === t.mode
-          , i = t.lerpP
-          , s = t.e.s._[this.url].curr;
-        e && (t = Math.floor(s / (this.data.out.w + this.data.out.gap.x) + .5),
-        this._pgn.targ = t * this.pgnH),
+        var _STATE = _A
+          , e = "out" === _STATE.mode
+          , i = _STATE.lerpP
+          , s = _STATE.engine.scroll._[this.url].curr;
+        e && (_STATE = Math.floor(s / (this.data.out.w + this.data.out.gap.x) + .5),
+        this._pgn.targ = _STATE * this.pgnH),
         this._pgn.curr = R.Damp(this._pgn.curr, this._pgn.targ, i),
         R.T(this.pgn, 0, R.R(-this._pgn.curr), "px"),
         this.moving = this.easing;
@@ -320,7 +320,7 @@ let GL$1 = class {
         var e = _A;
         let h = e.win.h
           , l = "in" === e.mode
-          , o = (l || (e.index = Math.floor(e.e.s._[this.url].curr / (this.data.out.w + this.data.out.gap.x) + .5)),
+          , o = (l || (e.index = Math.floor(e.engine.scroll._[this.url].curr / (this.data.out.w + this.data.out.gap.x) + .5)),
         e.index)
           , n = h + this.data.in.small.gap.x - this.data.in.small.y
           , p = -(this.data.out.y + this.data.out.h + this.data.out.gap.x)

@@ -5,36 +5,36 @@ class Mutation {
         this.mutationFx = new Fx
     }
     out() {
-        let e = _A;
-        var t = e.is
-          , i = e.was;
+        let _STATE = _A;
+        var t = _STATE.is
+            , i = _STATE.was;
         this.hToW = i.ho && t.wo,
-        this.wToW = i.wo && t.wo,
-        this.hToA = i.ho && t.ab,
-        e.e.off(),
-        (t.ho || t.ab) && e.e.nav.active.up(),
-        this.hToW || this.wToW || this.hToA ? (this.wToW && e.e.wo.fxBack.hide({
-            mutation: !0,
-            delay: 0
-        }).play(),
-        e.page.update()) : (i.wo && e.e.wo.fxBack.hide({
-            mutation: !0,
-            delay: 0
-        }).play(),
-        this.mutationFx.fadeOut({
-            cb: t => {
-                e.page.update()
-            }
-        }))
+            this.wToW = i.wo && t.wo,
+            this.hToA = i.ho && t.ab,
+            _STATE.engine.off(),
+            (t.ho || t.ab) && _STATE.engine.nav.active.up(),
+            this.hToW || this.wToW || this.hToA ? (this.wToW && _STATE.engine.wo.fxBack.hide({
+                mutation: !0,
+                delay: 0
+            }).play(),
+                _STATE.page.update()) : (i.wo && _STATE.engine.wo.fxBack.hide({
+                    mutation: !0,
+                    delay: 0
+                }).play(),
+                    this.mutationFx.fadeOut({
+                        cb: t => {
+                            _STATE.page.update()
+                        }
+                    }))
     }
     in() {
-        var t = _A;
-        this.hToW || this.wToW || this.hToA ? (t.page.insertNew(),
-        t.e.init(),
-        this.mutationFx.tr()) : (t.page.removeOld(),
-        t.page.insertNew(),
-        t.e.init(),
-        this.mutationFx.fadeIn())
+        var _STATE = _A;
+        this.hToW || this.wToW || this.hToA ? (_STATE.page.insertNew(),
+            _STATE.engine.init(),
+            this.mutationFx.tr()) : (_STATE.page.removeOld(),
+                _STATE.page.insertNew(),
+                _STATE.engine.init(),
+                this.mutationFx.fadeIn())
     }
 }
 export default Mutation;

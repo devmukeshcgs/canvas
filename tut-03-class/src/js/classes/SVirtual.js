@@ -54,7 +54,7 @@ export default class SVirtual {
         if (i || t || e) {
             var s = _A;
             if ("in" === s.mode && s.is.ho)
-                s.e.ho.gl.arrowSlide(t || e ? 1 : -1),
+                s.engine.ho.gl.arrowSlide(t || e ? 1 : -1),
                 this.tick = !1;
             else {
                 let t = 100;

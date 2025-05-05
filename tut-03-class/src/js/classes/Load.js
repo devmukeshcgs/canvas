@@ -69,7 +69,7 @@ export default class Load {
                     x.intro.h = this.tex[t].h,
                     x.intro.scale = this.tex[t].scale
             }
-            this.isHome && (s = t.e.ho.gl.data.in.small,
+            this.isHome && (s = t.engine.ho.gl.data.in.small,
                 this.bottomY = i + s.gap.x - s.y)
         }
     }

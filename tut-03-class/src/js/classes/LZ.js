@@ -1,9 +1,9 @@
 export default class LZ {
     initA() {
-        var t = _A;
-        if (this.notRequired = !t.is.wo,
+        var _STATE = _A;
+        if (this.notRequired = !_STATE.is.wo,
         !this.notRequired) {
-            this.url = t.route.new.url,
+            this.url = _STATE.route.new.url,
             this.img = [],
             this.imgI = [];
             var t = R.G.class("page")
@@ -17,16 +17,16 @@ export default class LZ {
                     dom: i
                 }
             }
-            for (let t = 0; t < this.lzL; t++)
-                this.img[t].decode = !1,
-                this.img[t].show = !1;
+            for (let i = 0; i < this.lzL; i++)
+                this.img[i].decode = !1,
+                this.img[i].show = !1;
             this.resizeA()
         }
     }
     resizeA() {
         if (!this.notRequired) {
             var t = _A
-              , e = t.e.s._[this.url].step
+              , e = t.engine.scroll._[this.url].step
               , i = t.win.h;
             for (let t = 0; t < this.lzL; t++) {
                 var s = this.img[t].dom;
@@ -40,7 +40,7 @@ export default class LZ {
     }
     loop() {
         if (!this.notRequired) {
-            var e = _A.e.s._[this.url].step;
+            var e = _A.engine.scroll._[this.url].step;
             for (let t = 0; t < this.lzL; t++) {
                 var i = this.img[t];
                 e > i.limit.decode && !i.decode && (this.img[t].decode = !0,

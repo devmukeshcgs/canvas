@@ -280,7 +280,7 @@ export default class SFx {
         }
     }
     loop() {
-        var e = _A.e.s._[this.url].curr;
+        var e = _A.engine.scroll._[this.url].curr;
         for (let t = 0; t < this.triggerL; t++)
             e > this.limit[t] && !this.isVisible[t] && (this.isVisible[t] = !0,
             this.tl[t].play())
@@ -289,7 +289,7 @@ export default class SFx {
         var e = _A
           , i = e.config.isLocal && e.introducing
           , s = e.fromBack
-          , r = this.trigger[t].getBoundingClientRect().top + e.e.s._[this.url].curr
+          , r = this.trigger[t].getBoundingClientRect().top + e.engine.scroll._[this.url].curr
           , a = r < e.win.h;
         this.limit[t] = a ? -1 : r - e.sFxS;
         let h = !a || s || i ? 0 : 700 + 200 * t;

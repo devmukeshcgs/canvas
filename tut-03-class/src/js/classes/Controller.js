@@ -4,28 +4,32 @@ import Rotate from "./Rotate"
 import { Router } from "../util/router";
 
 export default class Controller {
-  constructor(t) {
-    var e = _A;
-    e.is[404] || (e.mutating = !0,
-      e.page = {},
-      e.fromBack = !1,
-      this.transitionM = t.transition.mutation,
-      this.device = t.device,
+  constructor(config) {
+    console.log("Controller config", config);
+
+    var _STATE = _A;
+    console.log("_STATE", _A);
+
+    _STATE.is[404] || (_STATE.mutating = !0,
+      _STATE.page = {},
+      _STATE.fromBack = !1,
+      this.transitionM = config.transition.mutation,
+      this.device = config.device,
       R.BM(this, ["eD"]),
       new Win(this.device),
       "m" === this.device && new Rotate,
-      e.e = new t.engine,
+      _STATE.engine = new config.engine,
       this.onPopstate(),
       R.L(document.body, "a", "click", this.eD),
-      new t.transition.intro(t => {
-        this.intro(t)
+      new config.transition.intro(config => {
+        this.intro(config)
       }
       ))
   }
   onPopstate() {
-    let e = document
-      , i = "complete"
-      , s = e.readyState !== i;
+    let doc = document;
+    let i = "complete";
+    let s = doc.readyState !== i;
     onload = t => {
       setTimeout(t => {
         s = !1
@@ -34,7 +38,7 @@ export default class Controller {
     }
       ,
       onpopstate = t => {
-        s && e.readyState === i && (R.PD(t),
+        s && doc.readyState === i && (R.PD(t),
           t.stopImmediatePropagation());
         t = _A;
         R.Is.und(t.config.routes) || (t.mutating ? this.hPS() : (t.mutating = !0,
@@ -64,15 +68,15 @@ export default class Controller {
           this.out(i, r)) : "nav-logo" === r.id && (location.href = "/"))) : h && R.PD(t)
   }
   intro(e) {
-    let i = _A;
+    let _STATE = _A;
     R.Fetch({
-      url: i.route.new.url + "?webp=" + i.webp + "&device=" + this.device,
+      url: _STATE.route.new.url + "?webp=" + _STATE.webp + "&device=" + this.device,
       type: "html",
       success: t => {
         // t = JSON.parse(t);
         t = parseData,
-          i.config.routes = t.routes,
-          i.data = t.data,
+          _STATE.config.routes = t.routes,
+          _STATE.data = t.data,
           this.cache = t.cache,
           this.add(document.body, "afterbegin", t.body),
           this.main = R.G.id("main"),
