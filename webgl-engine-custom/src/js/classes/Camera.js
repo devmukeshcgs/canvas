@@ -1,4 +1,4 @@
-import { create, perspective, identity, translateFn, invert } from "../util/fun";
+import { create, perspective, identity, translateFn, invert } from "./fun";
 
  
 export default class Camera {

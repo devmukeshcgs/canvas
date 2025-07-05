@@ -1,4 +1,4 @@
-import { create, identity, multiplyFn, scaleFn, translateFn } from "../util/fun";
+import { create, identity, multiplyFn, scaleFn, translateFn } from "./fun";
 
  
 export default class Geo {

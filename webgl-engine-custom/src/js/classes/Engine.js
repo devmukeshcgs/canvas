@@ -7,12 +7,12 @@ import Work from "./Work"
 import About from "./About"
 import SIntersect from "./SIntersect"
 
-export default class E {
+export default class Engine {
     constructor() {
-        var _STATE = _A;
-        _STATE.lerpP = .083,
-            _STATE.index = 0,
-            _STATE.mode = "in",
+        var appState = _A;
+        appState.lerpP = .083,
+            appState.index = 0,
+            appState.mode = "in",
             R.BM(this, ["resize", "loop"]),
             this.raf = new R.RafR(this.loop),
             this.scroll = new Scroll,
@@ -28,14 +28,14 @@ export default class E {
             this.nav.intro()
     }
     init() {
-        var _STATE = _A
-            , _STATE = (_STATE.is.wo && (_STATE.index = _STATE.config.routes[_STATE.route.new.url].index),
+        var appState = _A
+            , appState = (appState.is.wo && (appState.index = appState.config.routes[appState.route.new.url].index),
                 this.ho.initB(),
                 this.wo.initB(),
             {
-                isX: _STATE.is.ho
+                isX: appState.is.ho
             });
-        this.scroll.init(_STATE),
+        this.scroll.init(appState),
             this.sIntersect = new SIntersect,
             this.lz.initA(),
             this.ho.initA(),

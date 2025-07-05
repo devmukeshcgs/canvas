@@ -3,8 +3,10 @@ import FxS1 from './FxS1';
 
 class Intro {
     constructor(initializer) {
-        const appContext = _A;
-        appContext.introducing = true;
+        console.log("initializer", initializer);
+
+        const appState = _A;
+        appState.introducing = true;
 
         // Reset the loading screen
         R.T(R.G.id("load-no").children[0], 0, 0);
@@ -14,8 +16,8 @@ class Intro {
 
         // Initialize the scene with the provided initializer function
         initializer((callback) => {
-            appContext.rgl = new RGL();
-            appContext.rgl.load(() => {
+            appState.rgl = new RGL();
+            appState.rgl.load(() => {
                 this.onLoadComplete();
             });
         });
@@ -23,17 +25,17 @@ class Intro {
 
     // Callback invoked after resources are loaded
     onLoadComplete() {
-        const appContext = _A;
+        const appState = _A;
 
         // Run intro sequence and initialize components
-        appContext.rgl.intro();
-        appContext.engine.intro();
-        appContext.engine.init();
-        appContext.engine.load.intro();
+        appState.rgl.intro();
+        appState.engine.intro();
+        appState.engine.init();
+        appState.engine.load.intro();
 
         // Start main application functionality
-        appContext.rgl.run();
-        appContext.engine.run();
+        appState.rgl.run();
+        appState.engine.run();
 
         // Trigger any intro-specific effects
         this.introEffects.run();

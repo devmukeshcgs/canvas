@@ -1,15 +1,15 @@
 class Page {
     constructor(e) {
-        let _STATE = _A
-          , engine = _STATE.engine;
-        var i = _STATE.config.isLocal
+        let appState = _A
+          , engine = appState.engine;
+        var i = appState.config.isLocal
           , e = e.intro
-          , a = _STATE.fromBack
-          , t = _STATE.is.ho
-          , h = _STATE.is.wo
-          , l = _STATE.is.ab
-          , o = _STATE.was.ho
-          , n = _STATE.was.wo;
+          , a = appState.fromBack
+          , t = appState.is.ho
+          , h = appState.is.wo
+          , l = appState.is.ab
+          , o = appState.was.ho
+          , n = appState.was.wo;
         let p = [];
         if (e) {
             if (t) {
@@ -19,7 +19,7 @@ class Page {
                     delay: 0
                 })),
                 p.push(engine.ho.fxTitle.show({
-                    index: _STATE.index,
+                    index: appState.index,
                     delay: e
                 })),
                 p.push(engine.ho.fxCross.side({
@@ -37,8 +37,8 @@ class Page {
                 new R.Delay(t => {
                     engine.on(),
                     R.PE.none(R.G.id("load")),
-                    _STATE.mutating = !1,
-                    _STATE.introducing = !1
+                    appState.mutating = !1,
+                    appState.introducing = !1
                 }
                 ,t).run()
             } else if (h) {
@@ -54,8 +54,8 @@ class Page {
                 })),
                 new R.Delay(t => {
                     engine.on(),
-                    _STATE.mutating = !1,
-                    _STATE.introducing = !1,
+                    appState.mutating = !1,
+                    appState.introducing = !1,
                     R.PE.none(R.G.id("load"))
                 }
                 ,t).run()
@@ -71,8 +71,8 @@ class Page {
                 })),
                 new R.Delay(t => {
                     engine.on(),
-                    _STATE.mutating = !1,
-                    _STATE.introducing = !1,
+                    appState.mutating = !1,
+                    appState.introducing = !1,
                     R.PE.none(R.G.id("load"))
                 }
                 ,t).run()
@@ -88,13 +88,13 @@ class Page {
                 delay: 0
             }))),
             p.push(engine.ho.gl.show()),
-            "out" === _STATE.mode ? p.push(engine.ho.fxCross.middle({
+            "out" === appState.mode ? p.push(engine.ho.fxCross.middle({
                 mutation: !0,
                 a: "show",
                 delay: t
             })) : (p.push(engine.ho.fxTitle.show({
                 mutation: !0,
-                index: _STATE.index,
+                index: appState.index,
                 delay: 0
             })),
             p.push(engine.ho.fxCross.side({
@@ -108,7 +108,7 @@ class Page {
             })),
             new R.Delay(t => {
                 engine.on(),
-                _STATE.mutating = !1
+                appState.mutating = !1
             }
             ,e).run()
         } else if (h) {
@@ -129,12 +129,12 @@ class Page {
             })),
             p.push(engine.ho.fxTitle.hide({
                 mutation: !0,
-                index: _STATE.index,
+                index: appState.index,
                 delay: 0
             })),
             p.push(engine.ho.over.hide({
                 mutation: !0,
-                index: _STATE.index
+                index: appState.index
             })),
             p.push(engine.ho.fxPgn.hide({
                 mutation: !0,
@@ -155,9 +155,9 @@ class Page {
                 delay: e
             })),
             new R.Delay(t => {
-                _STATE.page.removeOld(),
+                appState.page.removeOld(),
                 engine.on(),
-                _STATE.mutating = !1
+                appState.mutating = !1
             }
             ,i).run()
         } else if (o && l) {
@@ -165,7 +165,7 @@ class Page {
               , e = 1300;
             a && (t = 1,
             e = 1),
-            "out" === _STATE.mode ? p.push(engine.ho.fxCross.middle({
+            "out" === appState.mode ? p.push(engine.ho.fxCross.middle({
                 mutation: !0,
                 a: "hide",
                 delay: 0
@@ -176,7 +176,7 @@ class Page {
             })),
             p.push(engine.ho.fxTitle.hide({
                 mutation: !0,
-                index: _STATE.index,
+                index: appState.index,
                 delay: 0
             }))),
             p.push(engine.ho.fxPgn.hide({
@@ -189,9 +189,9 @@ class Page {
                 delay: t
             })),
             new R.Delay(t => {
-                _STATE.page.removeOld(),
+                appState.page.removeOld(),
                 engine.on(),
-                _STATE.mutating = !1
+                appState.mutating = !1
             }
             ,e).run()
         }

@@ -205,28 +205,68 @@
   </style>
   <link rel="canonical" href="https://yourdomain.com">
   <meta name="robots" content="all">
-  <title>Independent Designer & Art Director</title>
+  <title>Custom-WebGL-Engine</title>
   <meta name="description"
-    content="Camille Mormal is an Independent Interactive Designer & Art Director – Specializing in building art direction for immersive & interactive web experiences.">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Independent Designer & Art Director">
-  <meta name="twitter:description"
-    content="Camille Mormal is an Independent Interactive Designer & Art Director – Specializing in building art direction for immersive & interactive web experiences.">
-  <meta name="twitter:image" content="https://yourdomain.com/static/og/1200-630.png?1">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://yourdomain.com">
-  <meta property="og:title" content="Independent Designer & Art Director">
-  <meta property="og:description"
-    content="Camille Mormal is an Independent Interactive Designer & Art Director – Specializing in building art direction for immersive & interactive web experiences.">
-  <meta property="og:image" content="https://yourdomain.com/static/og/1200-630.png?1">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <link rel="icon" href="/static/fav/fav.ico?1" sizes="any">
-  <link rel="icon" href="/static/fav/fav.svg?1">
-  <link rel="apple-touch-icon" href="/static/fav/apple-touch.png?1">
-  <link crossorigin="use-credentials" rel="manifest" href="/static/fav/manifest.json?1">
-  <meta name="theme-color" content="#141414">
-  <script>window._A = { "config": { "v": "?1", "isLocal": false, "psd": { "d": { "w": 1600, "h": 1000 }, "m": { "w": 375, "h": 800 } } }, "webp": true, "img": { "jpg": ".jpg?1", "png": ".png?1" }, "route": { "new": { "url": "\/", "page": "ho" }, "old": { "url": false, "page": false } }, "is": { "404": false, "ho": true }, "was": [] }; let n = navigator, d = document, c = _A.config.v, device = /Mobi|Andrdoid|Tablet|iPad|iPhone/.test(n.userAgent) || "MacIntel" === n.platform && 1 < n.maxTouchPoints ? "m" : "d", css = d.createElement("link"), js = (css.rel = "stylesheet", css.href = "/src/css/" + device + ".css" + c, d.head.appendChild(css), d.createElement("script")); js.type = "module"; js.src = "/src/js/" + device + ".js" + c, d.onreadystatechange = e => { "complete" === d.readyState && d.body.appendChild(js) };</script>
+    content=""> 
+
+  <!-- <script>window._A = { "config": { "v": "?1", "isLocal": false, "psd": { "d": { "w": 1600, "h": 1000 }, "m": { "w": 375, "h": 800 } } }, "webp": true, "img": { "jpg": ".jpg?1", "png": ".png?1" }, "route": { "new": { "url": "\/", "page": "ho" }, "old": { "url": false, "page": false } }, "is": { "404": false, "ho": true }, "was": [] }; let n = navigator, d = document, c = _A.config.v, device = /Mobi|Andrdoid|Tablet|iPad|iPhone/.test(n.userAgent) || "MacIntel" === n.platform && 1 < n.maxTouchPoints ? "m" : "d", css = d.createElement("link"), js = (css.rel = "stylesheet", css.href = "/src/css/" + device + ".css" + c, d.head.appendChild(css), d.createElement("script")); js.type = "module"; js.src = "/src/js/" + device + ".js" + c, d.onreadystatechange = e => { "complete" === d.readyState && d.body.appendChild(js) };</script> -->
+
+  <script>
+    // Global Configuration
+    window._A = {
+      config: {
+        v: "?1",
+        isLocal: false,
+        psd: {
+          d: { w: 1600, h: 1000 },
+          m: { w: 375, h: 800 }
+        }
+      },
+      webp: true,
+      img: {
+        jpg: ".jpg?1",
+        png: ".png?1"
+      },
+      route: {
+        new: { url: "/", page: "ho" },
+        old: { url: false, page: false }
+      },
+      is: {
+        "404": false,
+        ho: true
+      },
+      was: []
+    };
+
+    // Device Detection
+    const navigatorInfo = navigator;
+    const documentInfo = document;
+    const version = _A.config.v;
+
+    const isMobileDevice = /Mobi|Android|Tablet|iPad|iPhone/.test(navigatorInfo.userAgent) ||
+      (navigatorInfo.platform === "MacIntel" && navigatorInfo.maxTouchPoints > 1);
+
+    const device = isMobileDevice ? "m" : "d";
+
+    // Load Device-Specific CSS
+    const cssLink = documentInfo.createElement("link");
+    cssLink.rel = "stylesheet";
+    cssLink.href = `/src/css/${device}.css${version}`;
+    documentInfo.head.appendChild(cssLink);
+
+    // Load Device-Specific JavaScript
+    const scriptTag = documentInfo.createElement("script");
+    scriptTag.type = "module";
+    scriptTag.src = `/src/js/${device}.js${version}`;
+
+    // Append script to the body when document is ready
+    documentInfo.onreadystatechange = () => {
+      if (documentInfo.readyState === "complete") {
+        documentInfo.body.appendChild(scriptTag);
+      }
+    };
+
+  </script>
 </head>
 
 <body>
@@ -240,8 +280,22 @@
       <div class="iss">Please enable JavaScript to view this website.</div>
     </div>
   </noscript>
-  <script
-    nomodule>var d = document, a = d.createElement("div"), b = (a.className = "iss-w", d.createElement("div")); b.className = "iss", b.textContent = "Please update your browser to view this website.", a.appendChild(b), d.body.appendChild(a);</script>
+  <script nomodule>// Create a wrapper div
+    const documentBody = document.body;
+    const wrapperDiv = document.createElement("div");
+    wrapperDiv.className = "iss-w";
+
+    // Create the inner message div
+    const messageDiv = document.createElement("div");
+    messageDiv.className = "iss";
+    messageDiv.textContent = "Please update your browser to view this website.";
+
+    // Append the message div to the wrapper div
+    wrapperDiv.appendChild(messageDiv);
+
+    // Append the wrapper div to the document body
+    documentBody.appendChild(wrapperDiv);
+  </script>
 </body>
 
 </html>

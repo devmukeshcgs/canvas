@@ -1,9 +1,9 @@
 export default class LZ {
     initA() {
-        var _STATE = _A;
-        if (this.notRequired = !_STATE.is.wo,
+        var appState = _A;
+        if (this.notRequired = !appState.is.wo,
         !this.notRequired) {
-            this.url = _STATE.route.new.url,
+            this.url = appState.route.new.url,
             this.img = [],
             this.imgI = [];
             var t = R.G.class("page")

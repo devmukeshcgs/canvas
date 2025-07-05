@@ -225,12 +225,12 @@ let GL$1 = class {
         this.texSet()
     }
     texSet() {
-        var _STATE = _A
-          , e = "out" === _STATE.mode
-          , i = _STATE.lerpP
-          , s = _STATE.engine.scroll._[this.url].curr;
-        e && (_STATE = Math.floor(s / (this.data.out.w + this.data.out.gap.x) + .5),
-        this._pgn.targ = _STATE * this.pgnH),
+        var appState = _A
+          , e = "out" === appState.mode
+          , i = appState.lerpP
+          , s = appState.engine.scroll._[this.url].curr;
+        e && (appState = Math.floor(s / (this.data.out.w + this.data.out.gap.x) + .5),
+        this._pgn.targ = appState * this.pgnH),
         this._pgn.curr = R.Damp(this._pgn.curr, this._pgn.targ, i),
         R.T(this.pgn, 0, R.R(-this._pgn.curr), "px"),
         this.moving = this.easing;
