@@ -5,6 +5,22 @@ import Scroll from "./scroll/Scroll.js";
 import SIntersect from "./classes/SIntersect.js";
 import LZ from "./loaders/LZ.js";
 import Load from "./loaders/Load.js";
+import Active from "./fx/Active.js";
+import Anima from "./fx/Anima.js";
+import FxTitle from "./fx/home/FxTitle.js";
+import FxCross from "./fx/home/FxCross.js";
+import FxPgn from "./fx/home/FxPgn.js";
+import Over from "./fx/home/Over.js";
+import NavFx from "./fx/nav/NavFx.js";
+import Nav from "./fx/nav/Nav.js";
+import SLine from "./fx/work/SLine.js";
+import FxHero from "./fx/work/FxHero.js";
+import FxFooter from "./fx/work/FxFooter.js";
+import FxBack from "./fx/work/FxBack.js";
+import Engine from "./engine/Engine.js";
+import Page from "./engine/Page.js";
+import Intro from "./transitions/Intro.js";
+import Mutation from "./transitions/Mutation.js";
 
 window.R = {},
 R.iLerp = (t, e, i) => R.Clamp((i - t) / (e - t), 0, 1),
@@ -648,6 +664,48 @@ R.RO = class {
 ,
 new R.RO)
   , RoId = 0;
+
+// Re-introduced here because the original block was commented during extraction.
+// Many extracted modules depend on these helpers at runtime.
+R.ROR = class {
+    constructor(t) {
+        this.cb = t,
+        this.id = RoId,
+        RoId++
+    }
+    on() {
+        Ro.add({
+            id: this.id,
+            cb: this.cb
+        })
+    }
+    off() {
+        Ro.remove(this.id)
+    }
+}
+,
+R.O = (t, e) => {
+    t.style.opacity = e
+}
+,
+R.pe = (t, e) => {
+    t.style.pointerEvents = e
+}
+,
+R.PE = {
+    all: t => {
+        R.pe(t, "all")
+    }
+    ,
+    none: t => {
+        R.pe(t, "none")
+    }
+},
+R.T = (t, e, i, s) => {
+    s = R.Is.und(s) ? "%" : s;
+    t.style.transform = "translate3d(" + e + s + "," + i + s + ",0)"
+}
+;
 /* App shell extracted to src/js/app/
 function Router(t) {
     var e = _A
@@ -1733,6 +1791,7 @@ class Load {
     }
 }
 */
+/* FX primitives extracted to src/js/fx/
 class Active {
     constructor() {
         this.page = ["ho", "ab"]
@@ -1937,6 +1996,8 @@ class Anima {
         }
     }
 }
+*/
+/* Nav FX extracted to src/js/fx/nav/
 let Fx$3 = class {
     intro() {
         var t = R.G.id("nav");
@@ -2002,6 +2063,8 @@ class Nav {
         this.fx.intro()
     }
 }
+*/
+/* Home GL extracted to src/js/pages/home/
 class GLData {
     init() {
         var t = _A
@@ -2621,7 +2684,9 @@ let GL$1 = class {
         }
     }
 }
+*/
 ;
+/* Home FX extracted to src/js/fx/home/
 class FxTitle {
     init() {
         this.title = R.G.class("h-title"),
@@ -2844,6 +2909,8 @@ class FxPgn {
         }
     }
 }
+*/
+/* Over extracted to src/js/fx/home/Over.js
 class Over {
     constructor() {
         R.BM(this, ["fn"])
@@ -2917,6 +2984,8 @@ class Over {
         R.L(".h-title-a", t, "mouseleave", this.fn)
     }
 }
+*/
+/* Home page wrapper extracted to src/js/pages/Home.js
 class Home {
     constructor() {
         this.gl = new GL$1,
@@ -2952,6 +3021,8 @@ class Home {
         this.over.off()
     }
 }
+*/
+/* Work GL extracted to src/js/pages/work/GL.js
 class GL {
     constructor() {
         this.moving = !1,
@@ -3145,6 +3216,8 @@ class GL {
         R.Is.def(this.mutationFx) && this.mutationFx.pause()
     }
 }
+*/
+/* Work FX extracted to src/js/fx/work/
 class SLine {
     constructor(t) {
         this.el = R.Select.el(t.el)[0],
@@ -3527,6 +3600,8 @@ class FxBack {
         }
     }
 }
+*/
+/* Work Preview extracted to src/js/pages/work/Preview.js
 let Preview$1 = class {
     init() {
         this.url = _A.route.new.url;
@@ -3563,7 +3638,9 @@ let Preview$1 = class {
         R.T(this.area, 0, -R.R(t - this.previewMax - this.areaMax), "px"))
     }
 }
+*/
 ;
+/* Work page wrapper extracted to src/js/pages/Work.js
 class Work {
     constructor() {
         this.gl = new GL,
@@ -3593,6 +3670,8 @@ class Work {
         this.preview.loop())
     }
 }
+*/
+/* About page extracted to src/js/pages/About.js
 let Fx$2 = class {
     init() {
         this.left = R.G.id("a-l"),
@@ -4005,6 +4084,8 @@ class About {
         this.preview.loop())
     }
 }
+*/
+/* Engine extracted to src/js/engine/
 class E {
     constructor() {
         var t = _A;
@@ -4278,6 +4359,8 @@ class Page {
         }
     }
 }
+*/
+/* IntroFx extracted to src/js/transitions/IntroFx.js
 let Fx$1 = class {
     constructor() {
         this.no = R.G.id("load-no").children[0],
@@ -4304,6 +4387,7 @@ let Fx$1 = class {
     }
 }
 ;
+*/
 /* WebGL extracted to src/js/webgl/
 function create() {
     var t = new Float32Array(16);
@@ -5086,7 +5170,8 @@ class RGL {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
     }
 }
-*/
+
+/* Transitions extracted to src/js/transitions/
 class Intro {
     constructor(t) {
         let e = _A;
@@ -5186,6 +5271,9 @@ class Mutation {
         this.mutationFx.fadeIn())
     }
 }
+*/
+const E = Engine;
+
 new Controller({
     device: "d",
     engine: E,
