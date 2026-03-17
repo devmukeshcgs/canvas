@@ -1,3 +1,5 @@
+import parseData from "./parseData.js";
+
 window.R = {},
 R.iLerp = (t, e, i) => R.Clamp((i - t) / (e - t), 0, 1),
 R.Lerp = (t, e, i) => t * (1 - i) + e * i,
@@ -825,7 +827,7 @@ class Controller {
             type: "html",
             success: t => {
                 // t = JSON.parse(t);
-                t={
+                t = parseData; /*
                   "body": "<div id=\"app\"><canvas id=\"gl\"></canvas><main id=\"main\"><div class=\"page\"><ul id=\"h-title-w\"><li><div class=\"h-title\"><a class=\"h-title-a\" href=\"/gucci\">The Regeneration Suite</a></div><div class=\"h-title-no exp\"><div>12</div></div></li><li><div class=\"h-title\"><a class=\"h-title-a\" href=\"/samsung\">Simplicity &amp; Tactility</a></div><div class=\"h-title-no exp\"><div>19</div></div></li><li><div class=\"h-title\"><a class=\"h-title-a\" href=\"/rituals\">Reimagining Loyalty</a></div><div class=\"h-title-no exp\"><div>16</div></div></li><li><div class=\"h-title\"><a class=\"h-title-a\" href=\"/moco\">Beyond The Canvas</a></div><div class=\"h-title-no exp\"><div>15</div></div></li><li><div class=\"h-title\"><a class=\"h-title-a\" href=\"/sennheiser\">Sound Expressed In Full</a></div><div class=\"h-title-no exp\"><div>16</div></div></li><li><div class=\"h-title\"><a class=\"h-title-a\" href=\"/swarovski\">Reinventing Wonder</a></div><div class=\"h-title-no exp\"><div>15</div></div></li><li><div class=\"h-title\"><a class=\"h-title-a\" href=\"/activia\">From Nature To Culture</a></div><div class=\"h-title-no exp\"><div>11</div></div></li><li><div class=\"h-title\"><a class=\"h-title-a\" href=\"/saeco\">From Gaggio With Love</a></div><div class=\"h-title-no exp\"><div>14</div></div></li></ul><div id=\"h-cross\"><div><svg viewBox=\"0 0 22 22\"><polygon class=\"st0\" points=\"11,11.75 11,11.75 11,10.249 11,10.249 11,11\"/><polygon class=\"st0\" points=\"11.75,11 11.75,11 10.249,11 10.249,11 11,10.999\"/></svg></div><div><svg viewBox=\"0 0 22 22\"><polygon class=\"st0\" points=\"11,11.75 11,11.75 11,10.249 11,10.249 11,11\"/><polygon class=\"st0\" points=\"11.75,11 11.75,11 10.249,11 10.249,11 11,10.999\"/></svg></div><div><svg viewBox=\"0 0 22 22\"><polygon class=\"st0\" points=\"11,11.75 11,11.75 11,10.249 11,10.249 11,11\"/><polygon class=\"st0\" points=\"11.75,11 11.75,11 10.249,11 10.249,11 11,10.999\"/></svg></div></div><div id=\"h-pgn\"><div id=\"h-pgn-left-w\"><div id=\"h-pgn-left\"><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div></div></div><div id=\"h-pgn-middle\">—</div><div id=\"h-pgn-right\">8</div></div></div></main><nav id=\"nav\"><div><a class=\"nav-a\" href=\"/\">Work</a></div><div><a class=\"nav-a\" href=\"/about\">About</a></div></nav><div id=\"_p\"></div><div id=\"sail\"></div></div>",
                   "cache": {
                       "/": {
@@ -1023,6 +1025,7 @@ class Controller {
                       }
                   }
               }
+                */
                 i.config.routes = t.routes,
                 i.data = t.data,
                 this.cache = t.cache,
