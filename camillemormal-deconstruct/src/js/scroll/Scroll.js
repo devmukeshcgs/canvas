@@ -20,6 +20,11 @@ export default class Scroll {
         this.mm = new MM({ cb: this.move });
     }
 
+    ensureUrl(url) {
+        if (!this._) this._ = {};
+        if (!this._[url]) this._[url] = { curr: 0, targ: 0, step: 0, expand: 0 };
+    }
+
     intro() {
         const app = _A;
         this._ = {};
@@ -28,13 +33,14 @@ export default class Scroll {
         const l = keys.length;
         for (let i = 0; i < l; i++) {
             const k = keys[i];
-            this._[k] = { curr: 0, targ: 0, step: 0, expand: 0 };
+            this.ensureUrl(k);
         }
     }
 
     init(t) {
         const e = _A;
         this.url = e.route.new.url;
+        this.ensureUrl(this.url);
         this.isHome = e.is.ho;
         this.isWork = e.is.wo;
         this.isX = t.isX;
@@ -59,6 +65,7 @@ export default class Scroll {
         let clamped;
         if (this.isHome) {
             this.max = e.e.ho.gl.max;
+            this.ensureUrl(this.url);
             clamped = this.clamp(this._[this.url].targ);
         } else {
             const pages = R.G.class("page");
@@ -67,6 +74,7 @@ export default class Scroll {
             this.maxStep = this.max;
             if (this.isWork) this.max += this.step;
             this.maxZero = this.max === 0;
+            this.ensureUrl(this.url);
             clamped = this.clamp(this._[this.url].targ);
         }
 
@@ -89,11 +97,12 @@ export default class Scroll {
     }
 
     sUp(t) {
+        this.ensureUrl(this.url);
         this._[this.url].targ = t;
     }
 
     down(t) {
-        if (t.ctrlKey || t.target.tagName === "A" || t.button !== 0) {
+        if (t.ctrlKey || t.button !== 0) {
             R.PD(t);
             return;
         }
@@ -157,6 +166,7 @@ export default class Scroll {
         if (!this.rqd) return;
 
         const t = this.url;
+        this.ensureUrl(t);
         this._[t].curr = R.Damp(this._[t].curr, this._[t].targ, i);
         const e = this.clampStep(this._[t].targ);
         this._[t].step = R.Damp(this._[t].step, e, i);
@@ -170,12 +180,14 @@ export default class Scroll {
 
     unequal() {
         const t = this.url;
+        this.ensureUrl(t);
         return 0 !== R.R(Math.abs(this._[t].curr - this._[t].targ));
     }
 
     sUpAll(t) {
         const e = this.clampStep(t);
         const i = this.url;
+        this.ensureUrl(i);
         this._[i].targ = t;
         this._[i].curr = t;
         this._[i].step = e;

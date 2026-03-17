@@ -57,6 +57,11 @@ export default class Controller {
 
     eD(ev) {
         const app = _A;
+        // If the user was dragging to scroll, ignore click navigation.
+        if (app.e?.s?.isDragging) {
+            R.PD(ev);
+            return;
+        }
         let el = ev.target;
         let isA = false;
         let isSubmit = false;
@@ -132,8 +137,9 @@ export default class Controller {
             this.add(this.main, "beforeend", next.html);
         };
         app.page.removeOld = () => {
-            const old = this.main.children[0];
-            old.parentNode.removeChild(old);
+            // Some routes (e.g. `/about`) insert multiple root nodes into `#main`.
+            // Clear everything to avoid leaving orphan siblings like `#a-l-w` / `#a-lp`.
+            for (; this.main.firstChild; ) this.main.removeChild(this.main.firstChild);
         };
 
         this.transitionM.in();

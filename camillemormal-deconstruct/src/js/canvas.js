@@ -1,4 +1,0 @@
-class MyCanvas {
-  constructor() {
-  }
-}

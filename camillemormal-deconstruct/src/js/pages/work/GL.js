@@ -120,6 +120,15 @@ export default class GL {
             }
         }
     }
+
+    show() {
+        // Compatibility wrapper expected by Page transitions.
+        // Original implementation branched on previous route.
+        const was = _A.was || {};
+        if (was.ho) return this.showFromHome();
+        if (was.wo) return this.showFromWork();
+        return this.showFromHome();
+    }
     showFromHome() {
         var t = _A;
         let e = t.win.h

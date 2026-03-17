@@ -151,5 +151,54 @@ export default class FxHero {
             },
         };
     }
+
+    hide(t) {
+        const e = _A;
+        if (!this.visible) return { play: () => {} };
+
+        const mutation = t.mutation;
+        let delay = t.delay ?? 0;
+        let d = 600;
+        let curve = "i3";
+
+        if (mutation && e.fromBack) {
+            delay = 0;
+            d = 0;
+        }
+
+        const tl = new R.TL();
+
+        for (let i = 0; i < this.h1L; i++) {
+            tl.from({
+                el: this.h1[i],
+                p: { y: [0, 110] },
+                d,
+                e: curve,
+                delay: i === 0 ? delay : 20,
+            });
+        }
+
+        tl.from({ el: this.roleTitle, p: { y: [0, 110] }, d, e: curve, delay: 20 });
+
+        for (let i = 0; i < this.pFxL; i++) {
+            tl.from({ el: this.pFx[i].children[0], p: { y: [0, 110] }, d, e: curve, delay: 10 });
+        }
+
+        for (let i = 0; i < this.teamL; i++) {
+            tl.from({ el: this.team[i], p: { y: [0, 110] }, d, e: curve, delay: 10 });
+        }
+
+        tl.from({ el: this.scroll, p: { y: [0, 110] }, d, e: curve, delay: 10 });
+
+        const arrowFade = new R.M({ el: this.arrow, p: { opacity: [1, 0] }, d, e: "o1", delay });
+
+        return {
+            play: () => {
+                this.visible = false;
+                tl.play();
+                arrowFade.play();
+            },
+        };
+    }
 }
 

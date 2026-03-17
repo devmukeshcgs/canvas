@@ -7,6 +7,7 @@ class SIntersect {
         this.arr = [];
         this.arrL = 0;
         this.notRequired = app.is.ho;
+        this.url = app.route?.new?.url;
 
         // If not required, exit initialization
         if (this.notRequired) return;
@@ -46,7 +47,10 @@ class SIntersect {
 
         const app = _A;
         const scrollKey = this.isWork ? "step" : "curr";
-        const scrollOffset = R.R(app.e.s._[this.url][scrollKey]);
+        const s = app.e?.s;
+        if (s?.ensureUrl) s.ensureUrl(this.url);
+        const entry = s?._?.[this.url];
+        const scrollOffset = R.R(entry?.[scrollKey] ?? 0);
         const windowHeight = app.win.h;
 
         for (const item of this.arr) {
@@ -72,7 +76,10 @@ class SIntersect {
 
         const app = _A;
         const scrollKey = this.isWork ? "step" : "curr";
-        const scrollPosition = R.R(app.e.s._[this.url][scrollKey]);
+        const s = app.e?.s;
+        if (s?.ensureUrl) s.ensureUrl(this.url);
+        const entry = s?._?.[this.url];
+        const scrollPosition = R.R(entry?.[scrollKey] ?? 0);
 
         for (const item of this.arr) {
             const { start, end } = item.inside;

@@ -10,6 +10,8 @@ export default class Program {
         this.program = this.crP();
 
         const u = this.uniform;
+        // Explicitly bind sampler `b` to TEXTURE0 for consistent sampling.
+        u.b = { type: "1i", value: 0 };
         u.g = { type: "Matrix4fv" };
         u.h = { type: "Matrix4fv" };
 

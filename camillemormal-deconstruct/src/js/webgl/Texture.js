@@ -65,8 +65,19 @@ export default class Texture {
         const isGl = t.gl;
         const index = t.index;
         const img = new Image();
+        const placeholderSrc = "/static/placeholder.svg";
+        const tryJpeg = () => {
+            // Support `.jpeg` assets when code/appends `.jpg?*`
+            if (!img.src) return false;
+            if (img.src.includes(".jpg")) {
+                img.src = img.src.replace(".jpg", ".jpeg");
+                return true;
+            }
+            return false;
+        };
 
         img.onload = () => {
+            
             if (isGl) {
                 const attrib = this.texInit(img);
                 this.tex[url][index] = {
@@ -76,6 +87,16 @@ export default class Texture {
                 };
             }
             this.no++;
+        };
+
+        img.onerror = () => {
+            // Try alternate extension first, then fallback to placeholder.
+            if (tryJpeg()) return;
+            if (img.src && img.src.includes(placeholderSrc)) {
+                this.no++;
+                return;
+            }
+            img.src = placeholderSrc;
         };
 
         img.src = src;

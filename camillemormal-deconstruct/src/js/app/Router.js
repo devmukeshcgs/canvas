@@ -7,6 +7,10 @@ export default function Router(url) {
     app.route.old = next;
     app.route.new = { url, page };
 
+    // Ensure scroll state exists for the new route immediately.
+    // Some page modules read `_A.e.s._[url].curr` during transitions.
+    if (app.e?.s?.ensureUrl) app.e.s.ensureUrl(url);
+
     app.is[next.page] = false;
     app.is[page] = true;
 

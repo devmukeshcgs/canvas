@@ -71,6 +71,7 @@ class Texture {
    */
   loadSingleTexture(config) {
     const img = new Image();
+    const placeholderSrc = "/static/placeholder.svg";
     img.onload = () => {
       if (config.useGL) {
         const textureAttributes = this.initializeTexture(img);
@@ -81,6 +82,13 @@ class Texture {
         };
       }
       this.loadedCount++;
+    };
+    img.onerror = () => {
+      if (img.src && img.src.includes(placeholderSrc)) {
+        this.loadedCount++;
+        return;
+      }
+      img.src = placeholderSrc;
     };
     img.src = config.src;
   }

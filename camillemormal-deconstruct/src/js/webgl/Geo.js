@@ -86,6 +86,7 @@ export default class Geo {
 
         this.program.setUniform();
 
+        gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.attrib.f.tex);
         r.vertexArray.bind(this.vao);
         const idx = this.attrib.index;
