@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon"
+    type="image/svg+xml"
+    href="/vite.svg" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0" />
+  <title>tut-01</title>
+  <link rel="stylesheet"
+    href="./src/style.css">
+  <script>
+    window._ROOTOBJECT = {
+      config: {
+        version: "?1"
+      },
+      webp: true,
+      img: {},
+      route: {},
+      is: {},
+      was: []
+    };
+
+    let n = navigator;
+    let ver = _ROOTOBJECT.config.version;
+    let device = /Mobi|Android|Tablet|iPad|iPhone/.test(n.userAgent) || ("MacIntel" === n.platform && n.maxTouchPoints > 1) ? "mobile" : "desktop";
+    let css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = `./src/${device}.css`;
+    css.href = "/src/css/" + device + ".css" + ver;
+    document.head.appendChild(css);
+    let js = document.createElement("script");
+    js.type = "module";
+    js.src = `./src/js/${device}.js` + ver;
+    document.head.appendChild(js);
+    document.onreadystatechange = (e) => {
+      if (document.readyState === "complete") {
+        document.body.appendChild(js);
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="load">
+    <div id="load-bg"></div>
+    <div id="load-no">
+      <div>0%</div>
+    </div>
+  </div>
+  <noscript>
+    <div class="iss-w">
+      <div class="iss">Please enable JavaScript to view this website.</div>
+    </div>
+  </noscript>
+  <script nomodule>
+    var d = document,
+      a = d.createElement("div"),
+      b = ((a.className = "iss-w"), d.createElement("div"));
+    ((b.className = "iss"),
+      (b.textContent = "Please update your browser to view this website."),
+      a.appendChild(b),
+      d.body.appendChild(a));
+  </script>
+</body>
+
+</html>
